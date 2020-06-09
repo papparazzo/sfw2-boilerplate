@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de-de">
+    <head profile="http://dublincore.org/documents/dcq-html/">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title><?php echo($this->title); ?></title>
+        <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"/>
+        <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/"/>
+        <meta name="keywords" content=""/>
+        <meta name="DC.title" content=""/>
+        <meta name="DC.creator" content=""/>
+        <meta name="DC.subject" content="<?php echo($this->title);?>"/>
+        <meta name="DC.description" content=""/>
+        <meta name="DC.publisher" content=""/>
+        <meta name="DC.description" content=""/>
+        <meta name="DC.language" content="" scheme="DCTERMS.RFC3066"/>
+        <meta name="DC.coverage" content="" scheme="DCTERMS.TGN"/>
+        <meta name="DC.rights" content=""/>
+        <meta name="DC.type" content="Text" scheme="DCTERMS.DCMIType"/>
+        <meta name="DC.format" content="text/html" scheme="DCTERMS.IMT"/>
+        <link rel="shortcut icon" href="/public/layout/favicon.ico" />
+        <?php foreach($this->cssFiles ?? [] as $file): ?>
+        <link href="<?php echo($file); ?>" rel="stylesheet" />
+        <?php endforeach; ?>
+    </head>
+    <body>
+        <?php echo($this->content); ?>
+    </body>
+    <?php foreach($this->jsFiles ?? [] as $file): ?>
+    <script type="text/javascript" src="<?php echo($file); ?>"></script>
+    <?php endforeach; ?>
+</html>
