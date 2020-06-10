@@ -1,0 +1,333 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "4f632cce4ddcc0f86550c91a194d4456",
+    "packages": [
+        {
+            "name": "level-2/dice",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Level-2/Dice.git",
+                "reference": "9fc016aae96dfa20dfabea0b18dfcfa0488c6a52"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Level-2/Dice/zipball/9fc016aae96dfa20dfabea0b18dfcfa0488c6a52",
+                "reference": "9fc016aae96dfa20dfabea0b18dfcfa0488c6a52",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Dice\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Tom Butler",
+                    "email": "tom@r.je"
+                }
+            ],
+            "description": "A minimalist Dependency injection container (DIC) for PHP. Please note: 3.0+ is only compatible with PHP 7.0. The 2.0 branch is compatbile with PHP 5.6.",
+            "homepage": "http://r.je/dice.html",
+            "keywords": [
+                "dependency injection",
+                "dependency injection container",
+                "di",
+                "ioc"
+            ],
+            "time": "2018-04-08T02:36:12+00:00"
+        },
+        {
+            "name": "sfw2/core",
+            "version": "2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/papparazzo/sfw2-core.git",
+                "reference": "d98e669cf4ae8b443155b6c93fc4966f38c7660e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/papparazzo/sfw2-core/zipball/d98e669cf4ae8b443155b6c93fc4966f38c7660e",
+                "reference": "d98e669cf4ae8b443155b6c93fc4966f38c7660e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SFW2\\Core\\": "src/"
+                }
+            },
+            "license": [
+                "GNU AFFERO GENERAL PUBLIC LICENSE Version 3"
+            ],
+            "support": {
+                "source": "https://github.com/papparazzo/sfw2-core/tree/2.0.5",
+                "issues": "https://github.com/papparazzo/sfw2-core/issues"
+            },
+            "time": "2020-05-17T21:28:59+00:00"
+        },
+        {
+            "name": "sfw2/routing",
+            "version": "3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/papparazzo/sfw2-routing.git",
+                "reference": "bcf9355ee6ba944c0769770af7ee483479f82e73"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/papparazzo/sfw2-routing/zipball/bcf9355ee6ba944c0769770af7ee483479f82e73",
+                "reference": "bcf9355ee6ba944c0769770af7ee483479f82e73",
+                "shasum": ""
+            },
+            "require": {
+                "level-2/dice": "^3.0",
+                "php": "^7.4",
+                "sfw2/core": "^2.0",
+                "sfw2/validator": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SFW2\\Routing\\": "src/"
+                }
+            },
+            "license": [
+                "GNU AFFERO GENERAL PUBLIC LICENSE Version 3"
+            ],
+            "support": {
+                "source": "https://github.com/papparazzo/sfw2-routing/tree/3.1.1",
+                "issues": "https://github.com/papparazzo/sfw2-routing/issues"
+            },
+            "time": "2019-12-22T21:18:04+00:00"
+        },
+        {
+            "name": "sfw2/validator",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/papparazzo/sfw2-validator.git",
+                "reference": "8b496cc9a4837b33a0fe777e109c69bca6703fc2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/papparazzo/sfw2-validator/zipball/8b496cc9a4837b33a0fe777e109c69bca6703fc2",
+                "reference": "8b496cc9a4837b33a0fe777e109c69bca6703fc2",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SFW2\\Validator\\": "src/"
+                }
+            },
+            "license": [
+                "GNU AFFERO GENERAL PUBLIC LICENSE Version 3"
+            ],
+            "description": "simple validation library",
+            "support": {
+                "source": "https://github.com/papparazzo/sfw2-validator/tree/3.0.0",
+                "issues": "https://github.com/papparazzo/sfw2-validator/issues"
+            },
+            "time": "2019-12-22T21:01:29+00:00"
+        },
+        {
+            "name": "symfony/deprecation-contracts",
+            "version": "v2.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/deprecation-contracts.git",
+                "reference": "dd99cb3a0aff6cadd2a8d7d7ed72c2161e218337"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/dd99cb3a0aff6cadd2a8d7d7ed72c2161e218337",
+                "reference": "dd99cb3a0aff6cadd2a8d7d7ed72c2161e218337",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "function.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "A generic function and convention to trigger deprecation notices",
+            "homepage": "https://symfony.com",
+            "time": "2020-05-27T08:34:37+00:00"
+        },
+        {
+            "name": "symfony/polyfill-ctype",
+            "version": "v1.17.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-ctype.git",
+                "reference": "e94c8b1bbe2bc77507a1056cdb06451c75b427f9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/e94c8b1bbe2bc77507a1056cdb06451c75b427f9",
+                "reference": "e94c8b1bbe2bc77507a1056cdb06451c75b427f9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "ext-ctype": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.17-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Ctype\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gert de Pagter",
+                    "email": "BackEndTea@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for ctype functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "ctype",
+                "polyfill",
+                "portable"
+            ],
+            "time": "2020-05-12T16:14:59+00:00"
+        },
+        {
+            "name": "symfony/yaml",
+            "version": "v5.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "ea342353a3ef4f453809acc4ebc55382231d4d23"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/ea342353a3ef4f453809acc4ebc55382231d4d23",
+                "reference": "ea342353a3ef4f453809acc4ebc55382231d4d23",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/deprecation-contracts": "^2.1",
+                "symfony/polyfill-ctype": "~1.8"
+            },
+            "conflict": {
+                "symfony/console": "<4.4"
+            },
+            "require-dev": {
+                "symfony/console": "^4.4|^5.0"
+            },
+            "suggest": {
+                "symfony/console": "For validating YAML files using the lint command"
+            },
+            "bin": [
+                "Resources/bin/yaml-lint"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Yaml\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Yaml Component",
+            "homepage": "https://symfony.com",
+            "time": "2020-05-20T17:43:50+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^7.4"
+    },
+    "platform-dev": []
+}

@@ -1,0 +1,46 @@
+{
+    "name": "sfw2/boilerplate",
+    "description": "Boilerplate for webpages",
+    "type": "project",
+    "authors": [
+        {
+            "name": "stefan",
+            "email": "pappi-@gmx.de"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SFW2\\Bootstrap\\": "src/",
+            "SFW2\\Install\\": "install/"
+        }
+    },
+   "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-validator.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-routing.git"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "level-2/dice": "^3.0",
+        "sfw2/core": "^2.0",
+        "sfw2/validator": "^3.0",
+        "sfw2/routing": "^3.0",
+        "symfony/yaml": "^5.1"
+
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "SFW2\\Install\\ComposerScript::postCreateProject"
+        ]
+    }
+
+}
