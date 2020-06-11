@@ -41,6 +41,7 @@ class Installer {
         $config = $this->getConfigArray();
         file_put_contents('config/config.yaml', Yaml::dump($config));
         $this->setUpDatabase($config['database']);
+        $this->cleaningUp('install');
     }
 
     protected function getConfigArray() : array {
@@ -92,6 +93,11 @@ class Installer {
         if($handle->multi_query($stmt) === false) {
             throw new Exception('Could not create database');
         }
+    }
+
+    protected function cleaningUp(string $path) : void {
+        array_map('unlink', glob("$path/*"));
+        rmdir($path);
     }
 }
 
