@@ -25,6 +25,9 @@ namespace SFW2\Install;
 use Composer\IO\IOInterface;
 use Symfony\Component\Yaml\Yaml;
 
+use Exception;
+use mysqli;
+
 class Installer {
 
     protected IOInterface $ioInterface;
@@ -35,7 +38,9 @@ class Installer {
 
     public function install() : void {
         $this->ioInterface->write('This will set up a new web page project');
-        file_put_contents('config/config.yaml', Yaml::dump($this->getConfigArray()));
+        $config = $this->getConfigArray();
+        file_put_contents('config/config.yaml', Yaml::dump($config));
+        $this->setUpDatabase($config['database']);
     }
 
     protected function getConfigArray() : array {
@@ -71,6 +76,22 @@ class Installer {
                 'memoryLimit' => '256M'
             ],
         ];
+    }
+
+    protected function setUpDatabase(array $dbConfig) : void {
+        $handle = new mysqli('p:' . $dbConfig['host'], $dbConfig['user'], $dbConfig['pwd']);
+        $err = mysqli_connect_error();
+        if($err) {
+            throw new Exception("Could not connect to database <$err>");
+        }
+        $handle->query("set names 'utf8';");
+
+        $stmt = str_replace('{DATABASE_NAME}', $dbConfig['db'], file_get_contents(__DIR__ . '/database.sql'));
+        $stmt = str_replace('{TABLE_PREFIX}', $dbConfig['prefix'], $stmt);
+
+        if($handle->multi_query($stmt) === false) {
+            throw new Exception('Could not create database');
+        }
     }
 }
 
