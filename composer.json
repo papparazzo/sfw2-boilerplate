@@ -14,7 +14,7 @@
             "SFW2\\Install\\": "install/"
         }
     },
-   "repositories": [
+    "repositories": [
         {
             "type": "vcs",
             "url": "https://github.com/papparazzo/sfw2-validator.git"
@@ -29,18 +29,22 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^8.1",
+
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "ext-intl": "*",
+        "ext-mysqli": "*",
+
         "level-2/dice": "^3.0",
-        "sfw2/core": "^2.0",
+
         "sfw2/validator": "^3.0",
         "sfw2/routing": "^3.0",
         "symfony/yaml": "^5.1"
-
     },
     "scripts": {
         "post-create-project-cmd": [
             "SFW2\\Install\\ComposerScript::postCreateProject"
         ]
     }
-
 }

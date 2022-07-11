@@ -23,6 +23,7 @@
 namespace SFW2\Install;
 
 use Composer\IO\IOInterface;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\Yaml\Yaml;
 
 use Exception;
@@ -36,7 +37,10 @@ class Installer {
         $this->ioInterface = $ioInterface;
     }
 
-    public function install() : void {
+    /**
+     * @throws \Exception
+     */
+    public function install(): void {
         $this->ioInterface->write('This will set up a new web page project');
         $config = $this->getConfigArray();
         file_put_contents('config/config.yaml', Yaml::dump($config));
@@ -44,7 +48,8 @@ class Installer {
         $this->cleaningUp('install');
     }
 
-    protected function getConfigArray() : array {
+    #[ArrayShape(['database' => "array", 'site' => "array", 'project' => "array", 'defEMailAddr' => "string[]", 'misc' => "array"])]
+    protected function getConfigArray(): array {
         $host = $this->ioInterface->ask('installation host? ');
         // TODO: Validate input!
         return [
@@ -79,8 +84,11 @@ class Installer {
         ];
     }
 
-    protected function setUpDatabase(array $dbConfig) : void {
-        $handle = new mysqli('p:' . $dbConfig['host'], $dbConfig['user'], $dbConfig['pwd']);
+    /**
+     * @throws \Exception
+     */
+    protected function setUpDatabase(array $dbConfig): void {
+        $handle = new mysqli("p:{$dbConfig['host']}", $dbConfig['user'], $dbConfig['pwd']);
         $err = mysqli_connect_error();
         if($err) {
             throw new Exception("Could not connect to database <$err>");
@@ -95,7 +103,7 @@ class Installer {
         }
     }
 
-    protected function cleaningUp(string $path) : void {
+    protected function cleaningUp(string $path): void {
         array_map('unlink', glob("$path/*"));
         rmdir($path);
     }
