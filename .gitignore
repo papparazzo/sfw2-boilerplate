@@ -1,4 +1,5 @@
 /vendor/
 
-# netbeans project files
+# project files
 /nbproject/
+/.idea
