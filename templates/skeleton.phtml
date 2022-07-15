@@ -27,8 +27,9 @@
     </head>
     <body>
         <?php echo($this->content); ?>
+        <input type="hidden" id="xssToken" value="<?php echo($this->xssToken);?>" />
+        <?php foreach($this->jsFiles ?? [] as $file): ?>
+        <script type="text/javascript" src="<?php echo($file); ?>"></script>
+        <?php endforeach; ?>
     </body>
-    <?php foreach($this->jsFiles ?? [] as $file): ?>
-    <script type="text/javascript" src="<?php echo($file); ?>"></script>
-    <?php endforeach; ?>
 </html>
