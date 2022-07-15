@@ -1,3 +1,7 @@
+composer.phar
+
+# Dependency directories
+/node_modules/
 /vendor/
 
 # project files
