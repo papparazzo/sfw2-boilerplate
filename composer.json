@@ -10,7 +10,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "SFW2\\Bootstrap\\": "src/",
+            "SFW2\\Boilerplate\\": "src/",
             "SFW2\\Install\\": "install/"
         }
     },
