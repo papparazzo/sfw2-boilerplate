@@ -28,6 +28,7 @@ use Symfony\Component\Yaml\Yaml;
 
 use Exception;
 use mysqli;
+use Locale;
 
 class Installer {
 
@@ -78,7 +79,7 @@ class Installer {
 
             'misc' => [
                 'timeZone'    => $this->ioInterface->ask('time zone? [' . date_default_timezone_get() . ']', date_default_timezone_get()),
-                'locale'      => $this->ioInterface->ask('locale? [' .  locale_get_default() . ']', locale_get_default()),
+                'locale'      => $this->ioInterface->ask('locale? [' . Locale::getDefault() . ']', Locale::getDefault()),
                 'memoryLimit' => '256M'
             ],
         ];
@@ -108,5 +109,3 @@ class Installer {
         rmdir($path);
     }
 }
-
-
