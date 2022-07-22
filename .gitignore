@@ -7,3 +7,6 @@ composer.phar
 # project files
 /nbproject/
 /.idea
+
+# configuration
+/config/config.yaml
