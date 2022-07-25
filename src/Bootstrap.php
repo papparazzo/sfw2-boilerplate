@@ -22,15 +22,18 @@
 
 namespace SFW2\Boilerplate;
 
+use Psr\Container\ContainerInterface;
+
+use SFW2\Session\Session;
+use SFW2\Database\Database;
+
 use SFW2\Routing\Request;
 use SFW2\Routing\Resolver\Resolver;
 use SFW2\Routing\ControllerMap\ControllerMapInterface;
 use SFW2\Routing\PathMap\PathMap;
 use SFW2\Routing\PathMap\PathMapLoaderInterface;
 
-use SFW2\Core\Database;
-use SFW2\Core\Session;
-use SFW2\Core\Config;
+
 use SFW2\Core\Permission\PermissionInterface;
 
 use SFW2\Authority\Permission\Permission;
@@ -127,8 +130,12 @@ class Bootstrap {
         date_default_timezone_set($this->config->get('misc:timeZone'));
     }
 
-    protected function setUpContainer() {
-        $this->container->addRules([
+    /**
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     */
+    protected function setUpContainer(): void {
+        $this->container = $this->container->addRules([
             Session::class => [
                 'shared' => true,
                 'constructParams' => [
@@ -184,10 +191,10 @@ class Bootstrap {
         ]);
     }
 
-    protected function setUpRuntime() {
+    protected function setUpRuntime(): void {
         $session = $this->container->create(Session::class);
         $currentUser = $session->getGlobalEntry(User::class);
-        $this->container->addRules([
+        $this->container = $this->container->addRules([
             User::class => [
                 'shared' => true,
                 'constructParams' => [$currentUser]
@@ -195,8 +202,12 @@ class Bootstrap {
         ]);
     }
 
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     protected function isOffline(Session $session): bool {
-        if(!$this->config->getVal('site', 'offline')) {
+        if(!$this->config->get('site:offline')) {
             return false;
         }
 
@@ -204,10 +215,7 @@ class Bootstrap {
             return false;
         }
 
-        if(
-            isset($this->get['bypass']) &&
-            $this->get['bypass'] == $this->config->getVal('site', 'offlineBypassToken')
-        ) {
+        if(isset($this->get['bypass']) && $this->get['bypass'] == $this->config->get('site:offlineBypassToken')) {
             $session->setGlobalEntry('bypass', true);
             return false;
         }
