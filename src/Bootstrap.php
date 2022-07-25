@@ -53,21 +53,29 @@ class Bootstrap {
 
     protected array $post;
 
+    protected ContainerInterface $config;
+
     /**
      * @param array $server
      * @param array $get
      * @param array $post
+     * @param \Psr\Container\ContainerInterface $config
      */
-    public function __construct(array $server, array $get, array $post) {
+    public function __construct(array $server, array $get, array $post, ContainerInterface $config) {
         $this->container = new Dice;
         $this->rootPath = __DIR__;
         $this->server   = $server;
         $this->get      = $get;
         $this->post     = $post;
+        $this->config   = $config;
     }
 
-    public function run(string $configPath): void {
-        $this->loadConfig($configPath);
+    /**
+     * @return void
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function run(): void {
         $this->setUpEnvironment();
         $this->setUpContainer();
         $this->setUpRuntime();
@@ -97,21 +105,12 @@ class Bootstrap {
         $dispatcher->dispatch($pathId, $result, $this->container);
     }
 
-    protected function loadConfig(string $configPath) {
-        $this->container->addRules([
-            Config::class => [
-                'shared' => true,
-                'constructParams' => [
-                    $configPath . DIRECTORY_SEPARATOR . 'conf.common.php',
-                    $this->rootPath . DIRECTORY_SEPARATOR . 'conf.common.php'
-                ]
-            ]
-        ]);
-        $this->config = $this->container->create(Config::class);
-    }
-
-    protected function setUpEnvironment() {
-        if($this->config->getVal('debug', 'on', false)) {
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function setUpEnvironment(): void {
+        if($this->config->get('site:debugMode')) {
             error_reporting(E_ALL);
             ini_set('display_errors', true);
         } else {
@@ -121,11 +120,11 @@ class Bootstrap {
 
         set_error_handler([$this, 'errorHandler']);
         mb_internal_encoding('UTF-8');
-        ini_set('memory_limit', $this->config->getVal('misc', 'memoryLimit'));
-        ini_set(LC_ALL, $this->config->getVal('misc', 'locale'));
-        setlocale(LC_TIME, $this->config->getVal('misc', 'locale') . ".UTF-8"); // FIXME ???
-        setlocale(LC_CTYPE, $this->config->getVal('misc', 'locale'));
-        date_default_timezone_set($this->config->getVal('misc', 'timeZone'));
+        ini_set('memory_limit', $this->config->get('misc:memoryLimit'));
+        ini_set(LC_ALL, $this->config->get('misc:locale'));
+        setlocale(LC_TIME, $this->config->get('misc:locale') . ".UTF-8"); // FIXME ???
+        setlocale(LC_CTYPE, $this->config->get('misc:locale'));
+        date_default_timezone_set($this->config->get('misc:timeZone'));
     }
 
     protected function setUpContainer() {
@@ -139,11 +138,11 @@ class Bootstrap {
             Database::class => [
                 'shared' => true,
                 'constructParams' => [
-                    $this->config->getVal('database', 'host'),
-                    $this->config->getVal('database', 'user'),
-                    $this->config->getVal('database', 'pwd'),
-                    $this->config->getVal('database', 'db'),
-                   # $this->config->getVal('database', 'prefix')
+                    $this->config->get('database:host'),
+                    $this->config->get('database:user'),
+                    $this->config->get('database:pwd'),
+                    $this->config->get('database:db'),
+                    $this->config->get('database:prefix')
                 ]
             ],
             Request::class => [
@@ -217,9 +216,11 @@ class Bootstrap {
 
     /**
      * @throws \ErrorException
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function errorHandler($errno, $errstr, $errfile, $errline): bool {
-        if(!$this->config->getVal('debug', 'on', false)) {
+        if(!$this->config->get('site:debugMode')) {
             return true;
         }
 
