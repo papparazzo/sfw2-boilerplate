@@ -27,22 +27,22 @@ CREATE DATABASE IF NOT EXISTS `{DATABASE_NAME}` DEFAULT CHARACTER SET utf8 COLLA
 USE `{DATABASE_NAME}`;
 
 CREATE TABLE IF NOT EXISTS `{TABLE_PREFIX}_controller_template` (
-  `Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ClassName` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
-  `DisplayName` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
-  `Description` text COLLATE utf8_unicode_ci NOT NULL,
-  `Data` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`Id`)
+    `Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `ClassName` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+    `DisplayName` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+    `Description` text COLLATE utf8_unicode_ci NOT NULL,
+    `Data` text COLLATE utf8_unicode_ci NOT NULL,
+    PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `{TABLE_PREFIX}_path` (
-  `Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ParentPathId` int(11) UNSIGNED DEFAULT NULL,
-  `Name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `ControllerTemplateId` int(10) UNSIGNED NOT NULL,
-  `JsonData` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `ModificationDate` date DEFAULT NULL,
-  PRIMARY KEY (`Id`)
+    `Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `ParentPathId` int(11) UNSIGNED DEFAULT NULL,
+    `Name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+    `ControllerTemplateId` int(10) UNSIGNED NOT NULL,
+    `JsonData` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+    `ModificationDate` date DEFAULT NULL,
+    PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `{TABLE_PREFIX}_path` (`Id`, `ParentPathId`, `Name`, `ControllerTemplateId`, `JsonData`, `ModificationDate`) VALUES
