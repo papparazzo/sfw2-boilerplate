@@ -24,6 +24,7 @@ namespace SFW2\Boilerplate;
 
 use Psr\Container\ContainerInterface;
 
+use SFW2\Routing\Router;
 use SFW2\Session\Session;
 use SFW2\Database\Database;
 
@@ -76,36 +77,62 @@ class Bootstrap {
     /**
      * @return void
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface|\SFW2\Database\Exception
      */
     public function run(): void {
         $this->setUpEnvironment();
         $this->setUpContainer();
-        $this->setUpRuntime();
 
-        $response = $this->container->create(ResponseHandler::class);
+        /** @var Session $session */
         $session = $this->container->create(Session::class);
+        /** @var Request $request */
         $request = $this->container->create(Request::class);
+        /** @var Database $database */
+        $database = $this->container->create(Database::class);
+
+
 
         $curPath = $request->getPath();
 
+        $router = new Router(new PathMap($curPath, new PathMapByDatabase($database)), new ControllerMapByDatabase($database));
+        $router->handleRequest($request);
+
+
+        #        $response = $this->container->create(ResponseHandler::class);
+
+        /*
+         *          Resolver::class => [
+                'shared' => true,
+                'substitutions' => [
+                    Dice::class => $this->container,
+                    ControllerMapInterface::class => [Dice::INSTANCE => ControllerMapByDatabase::class],
+                    AbstractPathMap::class => [Dice::INSTANCE => PathMapByDatabase::class],
+                    PermissionInterface::class => [Dice::INSTANCE => Permission::class]
+                ]
+            ],
+         */
+
+
+
+
+
         if($this->isOffline($session)) {
-            $result = $response->getOffline();
+#            $result = $response->getOffline();
         } else {
-            $resolver = $this->container->create(Resolver::class);
-            $result = $response->getContent($request, $resolver);
+#            $resolver = $this->container->create(Resolver::class);
+#            $result = $response->getContent($request, $resolver);
         }
-        $path = $this->container->create(PathMap::class);
-        $pathId = $path->getPathId($curPath);
+#        $path = $this->container->create(PathMap::class);
+#        $pathId = $path->getPathId($curPath);
 
-        $pathMap = $this->container->create(PathMapByDatabase::class);
+#        $pathMap = $this->container->create(PathMapByDatabase::class);
 
-        if($result->hasModifiedData()) {
-            $pathMap->updateModificationDateRecursive($curPath);
-        }
+#        if($result->hasModifiedData()) {
+#            $pathMap->updateModificationDateRecursive($curPath);
+#        }
 
-        $dispatcher = $this->container->create(Dispatcher::class);
-        $dispatcher->dispatch($pathId, $result, $this->container);
+#        $dispatcher = $this->container->create(Dispatcher::class);
+#        $dispatcher->dispatch($pathId, $result, $this->container);
     }
 
     /**
@@ -146,10 +173,10 @@ class Bootstrap {
                 'shared' => true,
                 'constructParams' => [
                     $this->config->get('database:host'),
-                    $this->config->get('database:user'),
-                    $this->config->get('database:pwd'),
                     $this->config->get('database:db'),
-                    $this->config->get('database:prefix')
+                    $this->config->get('database:user'),
+                    $this->config->get('database:prefix'),
+                    $this->config->get('database:pwd')
                 ]
             ],
             Request::class => [
@@ -159,23 +186,7 @@ class Bootstrap {
                     $this->get,
                     $this->post
                 ]
-            ],
-            Resolver::class => [
-                'shared' => true,
-                'substitutions' => [
-                    Dice::class => $this->container,
-                    ControllerMapInterface::class => [Dice::INSTANCE => ControllerMapByDatabase::class],
-                    AbstractPathMap::class => [Dice::INSTANCE => PathMapByDatabase::class],
-                    PermissionInterface::class => [Dice::INSTANCE => Permission::class]
-                ]
-            ],
-            PathMap::class => [
-                'shared' => true,
-                'constructParams' => ['/'],
-                'substitutions' => [
-                    PathMapLoaderInterface::class => [Dice::INSTANCE => PathMapByDatabase::class]
-                ]
-            ],
+            ],/*
             Menu::class => [
                 'shared' => true,
                 'substitutions' => [
@@ -187,11 +198,9 @@ class Bootstrap {
             ],
             PathMapByDatabase::class => [
                 'shared' => true
-            ]
+            ]*/
         ]);
-    }
 
-    protected function setUpRuntime(): void {
         $session = $this->container->create(Session::class);
         $currentUser = $session->getGlobalEntry(User::class);
         $this->container = $this->container->addRules([
