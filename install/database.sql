@@ -42,10 +42,16 @@ CREATE TABLE IF NOT EXISTS `{TABLE_PREFIX}_path` (
     `ControllerTemplateId` int(10) UNSIGNED NOT NULL,
     `JsonData` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
     `ModificationDate` date DEFAULT NULL,
-    PRIMARY KEY (`Id`)
+    PRIMARY KEY (`Id`),
+    KEY `ParentPath` (`ParentPathId`),
+    KEY `Template` (`ControllerTemplateId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+ALTER TABLE `{TABLE_PREFIX}_path`
+    ADD CONSTRAINT `ParentPath` FOREIGN KEY (`ParentPathId`) REFERENCES `{TABLE_PREFIX}_path` (`Id`) ON UPDATE CASCADE,
+    ADD CONSTRAINT `Template` FOREIGN KEY (`ControllerTemplateId`) REFERENCES `{TABLE_PREFIX}_controller_template` (`Id`);
+
 INSERT INTO `{TABLE_PREFIX}_path` (`Id`, `ParentPathId`, `Name`, `ControllerTemplateId`, `JsonData`, `ModificationDate`) VALUES
-(0, NULL, 'home', 1, '[\"home\"]', NULL)
+(0, NULL, 'home', 1, '[\"home\"]', NULL);
 
 COMMIT;
