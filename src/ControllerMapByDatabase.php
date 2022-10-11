@@ -22,7 +22,6 @@
 
 namespace SFW2\Boilerplate;
 
-use InvalidArgumentException;
 use OutOfRangeException;
 use SFW2\Database\Database;
 use SFW2\Routing\ControllerMap\ControllerMapInterface;
@@ -39,10 +38,11 @@ class ControllerMapByDatabase implements ControllerMapInterface {
      * @param int $pathId
      * @return array[]
      * @throws \SFW2\Database\Exception
+     * @throws \JsonException
      */
     public function getControllerRulsetByPathId(int $pathId): array {
         $stmt = /** @lang MySQL */
-            "SELECT `ClassName`, `JsonData` " .
+            "SELECT `ClassName` AS " . self::CLASS_NAME . ", `JsonData` AS " . self::ADDITIONAL_DATA . ' ' .
             "FROM `{TABLE_PREFIX}_path` AS `ctrlMap` " .
             "LEFT JOIN `{TABLE_PREFIX}_controller_template` AS `ctrlTempl` " .
             "ON `ctrlMap`.`ControllerTemplateId` = `ctrlTempl`.`Id` " .
@@ -54,18 +54,12 @@ class ControllerMapByDatabase implements ControllerMapInterface {
             throw new OutOfRangeException("no entry found for path <$pathId>");
         }
 
-        $params = json_decode($res['JsonData'], true);
+        $res[self::ADDITIONAL_DATA] = json_decode(
+            json: $res[self::ADDITIONAL_DATA],
+            associative:  true,
+            flags:  JSON_THROW_ON_ERROR
+        );
 
-        if(!is_array($params)) {
-            throw new InvalidArgumentException("invalid params given <{$res['JsonData']}>");
-        }
-
-        array_unshift($params, $pathId);
-
-        return [
-            $res['ClassName'] => [
-                'constructParams' => $params
-            ]
-        ];
+        return $res;
     }
 }
