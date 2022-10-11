@@ -37,11 +37,21 @@ class PathMapByDatabase implements PathMapLoaderInterface {
      */
     public function __construct(Database $database) {
         $this->database = $database;
-        $this->loadPath($this->pathMap);
+        $this->loadRootPath($this->pathMap);
     }
 
     public function getPathMap(): array {
         return $this->pathMap;
+    }
+
+    /**
+     * @throws \SFW2\Database\Exception
+     */
+    protected function loadRootPath(array &$map): void {
+        $item = $this->database->selectRow("SELECT `Id`, `Name` FROM `{TABLE_PREFIX}_path` WHERE `ParentPathId` IS NULL");
+
+        $map['/'] = $item['Id'];
+        $this->loadPath($map, (int)$item['Id']);
     }
 
     /**
@@ -51,7 +61,7 @@ class PathMapByDatabase implements PathMapLoaderInterface {
      * @return void
      * @throws \SFW2\Database\Exception
      */
-    protected function loadPath(array &$map, int $parentId = 0, string $prefix = '/'): void {
+    protected function loadPath(array &$map, int $parentId, string $prefix = '/'): void {
 
         $res = $this->database->select("SELECT `Id`, `Name` FROM `{TABLE_PREFIX}_path` WHERE `ParentPathId` = '%s'", [$parentId]);
 
