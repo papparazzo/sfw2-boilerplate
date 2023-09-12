@@ -22,32 +22,33 @@
 
 namespace SFW2\Boilerplate;
 
+use DI\Container;
+use DI\ContainerBuilder;
+use DI\DependencyException;
+use DI\NotFoundException;
+use JetBrains\PhpStorm\NoReturn;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7Server\ServerRequestCreator;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
-use SFW2\Routing\Router;
+use Psr\Container\NotFoundExceptionInterface;
+use SFW2\Config\Config;
+use SFW2\Config\Exceptions\ContainerException;
+use SFW2\Database\Exception;
+use SFW2\Routing\Dispatcher;
+use SFW2\Routing\Runner;
 use SFW2\Session\Session;
 use SFW2\Database\Database;
 
-use SFW2\Routing\Request;
-use SFW2\Routing\Resolver\Resolver;
-use SFW2\Routing\ControllerMap\ControllerMapInterface;
-use SFW2\Routing\PathMap\PathMap;
-use SFW2\Routing\PathMap\PathMapLoaderInterface;
+use SFW2\Routing\Router;
 
-
-use SFW2\Core\Permission\PermissionInterface;
-
-use SFW2\Authority\Permission\Permission;
-use SFW2\Authority\User;
-
-use SFW2\Menu\Menu\Menu;
-
-use Dice\Dice;
 use ErrorException;
+use Symfony\Component\Yaml\Yaml;
 
 class Bootstrap {
 
-    protected Dice $container;
+    protected Container $container;
 
     protected string $rootPath;
 
@@ -57,90 +58,60 @@ class Bootstrap {
 
     protected array $post;
 
-    protected ContainerInterface $config;
-
     /**
      * @param array $server
      * @param array $get
      * @param array $post
-     * @param \Psr\Container\ContainerInterface $config
+     * @param string $configFile
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerException
      */
-    public function __construct(array $server, array $get, array $post, ContainerInterface $config) {
-        $this->container = new Dice;
-        $this->rootPath = __DIR__;
-        $this->server   = $server;
-        $this->get      = $get;
-        $this->post     = $post;
-        $this->config   = $config;
-    }
+    public function __construct(array $server, array $get, array $post, string $configFile) {
+        $this->rootPath  = __DIR__;
+        $this->server    = $server;
+        $this->get       = $get;
+        $this->post      = $post;
+        $this->container = $this->getContainer($configFile);
 
-    /**
-     * @return void
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface|\SFW2\Database\Exception
-     */
-    public function run(): void {
         $this->setUpEnvironment();
-        $this->setUpContainer();
-
-        /** @var Session $session */
-        $session = $this->container->create(Session::class);
-        /** @var Request $request */
-        $request = $this->container->create(Request::class);
-        /** @var Database $database */
-        $database = $this->container->create(Database::class);
-
-
-
-        $curPath = $request->getPath();
-
-        $router = new Router(new PathMap($curPath, new PathMapByDatabase($database)), new ControllerMapByDatabase($database));
-        $router->handleRequest($request);
-
-
-        #        $response = $this->container->create(ResponseHandler::class);
-
-        /*
-         *          Resolver::class => [
-                'shared' => true,
-                'substitutions' => [
-                    Dice::class => $this->container,
-                    ControllerMapInterface::class => [Dice::INSTANCE => ControllerMapByDatabase::class],
-                    AbstractPathMap::class => [Dice::INSTANCE => PathMapByDatabase::class],
-                    PermissionInterface::class => [Dice::INSTANCE => Permission::class]
-                ]
-            ],
-         */
-
-
-
-
-
-        if($this->isOffline($session)) {
-#            $result = $response->getOffline();
-        } else {
-#            $resolver = $this->container->create(Resolver::class);
-#            $result = $response->getContent($request, $resolver);
-        }
-#        $path = $this->container->create(PathMap::class);
-#        $pathId = $path->getPathId($curPath);
-
-#        $pathMap = $this->container->create(PathMapByDatabase::class);
-
-#        if($result->hasModifiedData()) {
-#            $pathMap->updateModificationDateRecursive($curPath);
-#        }
-
-#        $dispatcher = $this->container->create(Dispatcher::class);
-#        $dispatcher->dispatch($pathId, $result, $this->container);
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws DependencyException
+     * @throws Exception
+     * @throws NotFoundException
+     */
+    #[NoReturn]
+    public function run(): void {
+        /** @var Database $database */
+        $database = $this->container->get(Database::class);
+
+        $controllerMap = new ControllerMapByDatabase($database);
+        $pathMap = new PathMapByDatabase($database);
+        $psr17Factory = new Psr17Factory();
+
+        $router = new Router(new Runner($pathMap, $controllerMap, $this->container, $psr17Factory));
+
+        $creator = new ServerRequestCreator(
+            $psr17Factory, // ServerRequestFactory
+            $psr17Factory, // UriFactory
+            $psr17Factory, // UploadedFileFactory
+            $psr17Factory  // StreamFactory
+        );
+
+        $response = $router->handle($creator->fromGlobals());
+
+        $x = new Dispatcher();
+        $x->dispatch($response);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function setUpEnvironment(): void {
-        if($this->config->get('site:debugMode')) {
+        if($this->container->get('site.debugMode')) {
             error_reporting(E_ALL);
             ini_set('display_errors', true);
         } else {
@@ -150,94 +121,46 @@ class Bootstrap {
 
         set_error_handler([$this, 'errorHandler']);
         mb_internal_encoding('UTF-8');
-        ini_set('memory_limit', $this->config->get('misc:memoryLimit'));
-        ini_set(LC_ALL, $this->config->get('misc:locale'));
-        setlocale(LC_TIME, $this->config->get('misc:locale') . ".UTF-8"); // FIXME ???
-        setlocale(LC_CTYPE, $this->config->get('misc:locale'));
-        date_default_timezone_set($this->config->get('misc:timeZone'));
+        ini_set('memory_limit', $this->container->get('misc.memoryLimit'));
+        ini_set(LC_ALL, $this->container->get('misc.locale'));
+        setlocale(LC_TIME, $this->container->get('misc.locale') . ".UTF-8"); // FIXME ???
+        setlocale(LC_CTYPE, $this->container->get('misc.locale'));
+        date_default_timezone_set($this->container->get('misc.timeZone'));
     }
 
     /**
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws ContainerException
+     * @throws \Exception
      */
-    protected function setUpContainer(): void {
-        $this->container = $this->container->addRules([
-            Session::class => [
-                'shared' => true,
-                'constructParams' => [
-                    $this->server['SERVER_NAME']
-                ]
-            ],
-            Database::class => [
-                'shared' => true,
-                'constructParams' => [
-                    $this->config->get('database:host'),
-                    $this->config->get('database:db'),
-                    $this->config->get('database:user'),
-                    $this->config->get('database:prefix'),
-                    $this->config->get('database:pwd')
-                ]
-            ],
-            Request::class => [
-                'shared' => true,
-                'constructParams' => [
-                    $this->server,
-                    $this->get,
-                    $this->post
-                ]
-            ],/*
-            Menu::class => [
-                'shared' => true,
-                'substitutions' => [
-                    PermissionInterface::class => [Dice::INSTANCE => Permission::class]
-                ]
-            ],
-            Permission::class => [
-                'shared' => true
-            ],
-            PathMapByDatabase::class => [
-                'shared' => true
-            ]*/
-        ]);
+    protected function getContainer(string $configFile): Container {
+        $builder = new ContainerBuilder();
+        $builder->addDefinitions((new Config(Yaml::parseFile($configFile)))->getAsArray());
+        $builder->addDefinitions([
+            'session.servername' => $this->server['SERVER_NAME'],
 
-        $session = $this->container->create(Session::class);
-        $currentUser = $session->getGlobalEntry(User::class);
-        $this->container = $this->container->addRules([
-            User::class => [
-                'shared' => true,
-                'constructParams' => [$currentUser]
-            ]
+            Session::class => function (ContainerInterface $ci) {
+                return new Session($ci->get('session.servername'));
+            },
+            Database::class => function (ContainerInterface $ci) {
+                return new Database(
+                    $ci->get('database.host'),
+                    $ci->get('database.user'),
+                    $ci->get('database.pwd'),
+                    $ci->get('database.db'),
+                    $ci->get('database.prefix')
+                );
+            },
         ]);
+        return $builder->build();
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function isOffline(Session $session): bool {
-        if(!$this->config->get('site:offline')) {
-            return false;
-        }
-
-        if($session->isGlobalEntrySet('bypass')) {
-            return false;
-        }
-
-        if(isset($this->get['bypass']) && $this->get['bypass'] == $this->config->get('site:offlineBypassToken')) {
-            $session->setGlobalEntry('bypass', true);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @throws \ErrorException
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws DependencyException
+     * @throws ErrorException
      */
     public function errorHandler($errno, $errstr, $errfile, $errline): bool {
-        if(!$this->config->get('site:debugMode')) {
+        if(!$this->container->get('site.debugMode')) {
             return true;
         }
 
@@ -246,5 +169,4 @@ class Bootstrap {
         }
         throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
     }
-
 }
