@@ -22,30 +22,28 @@
 
 namespace SFW2\Boilerplate;
 
+use OutOfRangeException;
 use SFW2\Database\Database;
-use SFW2\Routing\PathMap\PathMapLoaderInterface;
+use SFW2\Database\Exception;
+use SFW2\Routing\PathMap\PathMapInterface;
 
-class PathMapByDatabase implements PathMapLoaderInterface {
+class PathMapByDatabase implements PathMapInterface {
 
     protected Database $database;
 
     protected array $pathMap = [];
 
     /**
-     * * @param \SFW2\Database\Database $database
-     * * @throws \SFW2\Database\Exception
+     * * @param Database $database
+     * * @throws Exception
      */
     public function __construct(Database $database) {
         $this->database = $database;
         $this->loadRootPath($this->pathMap);
     }
 
-    public function getPathMap(): array {
-        return $this->pathMap;
-    }
-
     /**
-     * @throws \SFW2\Database\Exception
+     * @throws Exception
      */
     protected function loadRootPath(array &$map): void {
         $item = $this->database->selectRow("SELECT `Id`, `Name` FROM `{TABLE_PREFIX}_path` WHERE `ParentPathId` IS NULL");
@@ -59,7 +57,7 @@ class PathMapByDatabase implements PathMapLoaderInterface {
      * @param int $parentId
      * @param string $prefix
      * @return void
-     * @throws \SFW2\Database\Exception
+     * @throws Exception
      */
     protected function loadPath(array &$map, int $parentId, string $prefix = '/'): void {
 
@@ -72,21 +70,15 @@ class PathMapByDatabase implements PathMapLoaderInterface {
     }
 
     /**
-     * @param string $path
-     * @throws \SFW2\Database\Exception
-     * /
-    public function isValidPath(string $path): bool
-    {
-        $stmt = "SELECT * FROM `{TABLE_PREFIX}_path` AS `ctrlMap` WHERE `ctrlMap`.`Id` = '%s' ";
-
-        $res = $this->database->selectRow($stmt, [$path]);
-    }
-*/
+     * @throws Exception
+     */
     public function updateModificationDateRecursive(string $path): void {
         if(!isset($this->pathMap[$path])) {
             return;
         }
 
+
+        // TODO Consider to save id in tmp and execute UPDATE ... SET ... WHERE Id IN(tmp...)
         $this->updateModificationDate($this->pathMap[$path]);
 
         $pos = strrpos($path, '/');
@@ -100,9 +92,36 @@ class PathMapByDatabase implements PathMapLoaderInterface {
     /**
      * @param int $pathId
      * @return void
-     * @throws \SFW2\Database\Exception
+     * @throws Exception
      */
     protected function updateModificationDate(int $pathId): void {
         $this->database->update("UPDATE `{TABLE_PREFIX}_path` SET `ModificationDate` = NOW() WHERE `Id` = '%s'", [$pathId]);
+    }
+
+    public function isValidPath(string $path): bool {
+        return isset($this->pathMap[$path]);
+    }
+
+    public function getPathId(string $path): int {
+        if(!$this->isValidPath($path)) {
+            throw new OutOfRangeException("invalid path <$path> given");
+        }
+        return $this->pathMap[$path];
+    }
+
+    public function getPath(int $pathId): string {
+        $res = array_search($pathId, $this->pathMap);
+        if($res === false) {
+            throw new OutOfRangeException("path for id <$pathId> does not exists");
+        }
+        return $res;
+    }
+
+    public function getPathIdOfParentPath(string $currentPath): int {
+        $chunks =  explode('/', $currentPath);
+        if($chunks[1] == '') {
+            throw new OutOfRangeException("invalid path <$currentPath> given");
+        }
+        return $this->getPathId('/' . $chunks[1]);
     }
 }
