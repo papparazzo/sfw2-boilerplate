@@ -55,6 +55,6 @@ INSERT INTO `{TABLE_PREFIX}_controller_template` (`Id`, `ClassName`, `DisplayNam
     (1, 'SFW2\\Boilerplate\\StaticController', 'Static', 'Statischer Inhalt', '');
 
 INSERT INTO `{TABLE_PREFIX}_path` (`Id`, `ParentPathId`, `Name`, `ControllerTemplateId`, `JsonData`, `ModificationDate`) VALUES
-(0, NULL, 'home', 1, '[\"home\"]', NULL);
+    (0, NULL, '', 1, '[]', NULL);
 
 COMMIT;
