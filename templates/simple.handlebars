@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-3">{{title}}</h1>
+        <p class="lead">{{caption}}</p>
+        <p>{{description}}</p>
+        {{#if debugData}}
+        <hr class="my-4">
+        <p>
+            <pre>
+                <?php echo(htmlentities(print_r($this->debugData, true))); ?>
+            </pre>
+        </p>
+        {{/if}}
+    </div>
+</div>
