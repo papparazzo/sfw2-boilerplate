@@ -51,6 +51,9 @@ ALTER TABLE `{TABLE_PREFIX}_path`
     ADD CONSTRAINT `ParentPath` FOREIGN KEY (`ParentPathId`) REFERENCES `{TABLE_PREFIX}_path` (`Id`) ON UPDATE CASCADE,
     ADD CONSTRAINT `Template` FOREIGN KEY (`ControllerTemplateId`) REFERENCES `{TABLE_PREFIX}_controller_template` (`Id`);
 
+INSERT INTO `{TABLE_PREFIX}_controller_template` (`Id`, `ClassName`, `DisplayName`, `Description`, `Data`) VALUES
+    (1, 'SFW2\\Boilerplate\\StaticController', 'Static', 'Statischer Inhalt', '');
+
 INSERT INTO `{TABLE_PREFIX}_path` (`Id`, `ParentPathId`, `Name`, `ControllerTemplateId`, `JsonData`, `ModificationDate`) VALUES
 (0, NULL, 'home', 1, '[\"home\"]', NULL);
 
