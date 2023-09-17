@@ -33,10 +33,16 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\NullLogger;
 use SFW2\Config\Config;
 use SFW2\Config\Exceptions\ContainerException;
 use SFW2\Database\Exception;
+use SFW2\Routing\ControllerMap\ControllerMap;
 use SFW2\Routing\Dispatcher;
+use SFW2\Routing\Middleware\Error;
+use SFW2\Routing\Middleware\Offline;
+use SFW2\Routing\Render\RenderJson;
+use SFW2\Routing\ResponseEngine;
 use SFW2\Routing\Runner;
 use SFW2\Session\Session;
 use SFW2\Database\Database;
@@ -44,6 +50,7 @@ use SFW2\Database\Database;
 use SFW2\Routing\Router;
 
 use ErrorException;
+use SFW2\Session\SessionSimpleCache;
 use Symfony\Component\Yaml\Yaml;
 
 class Bootstrap {
@@ -86,12 +93,20 @@ class Bootstrap {
     public function run(): void {
         /** @var Database $database */
         $database = $this->container->get(Database::class);
+        /** @var Session $session */
+        $session = $this->container->get(Session::class);
+
+        $logger = new NullLogger();
 
         $controllerMap = new ControllerMapByDatabase($database);
         $pathMap = new PathMapByDatabase($database);
         $psr17Factory = new Psr17Factory();
 
-        $router = new Router(new Runner($pathMap, $controllerMap, $this->container, $psr17Factory));
+        $responseEngine = new ResponseEngine(new RenderJson(), $psr17Factory);
+
+        $router = new Router(new Runner($pathMap, $controllerMap, $this->container, $responseEngine));
+        $router->addMiddleware(new Offline(new SessionSimpleCache($session), $this->container));
+        $router->addMiddleware(new Error($responseEngine, $this->container, $logger));
 
         $creator = new ServerRequestCreator(
             $psr17Factory, // ServerRequestFactory
