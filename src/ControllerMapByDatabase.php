@@ -28,10 +28,9 @@ use SFW2\Routing\ControllerMap\ControllerMapInterface;
 
 class ControllerMapByDatabase implements ControllerMapInterface {
 
-    protected Database $database;
-
-    public function __construct(Database $database) {
-        $this->database = $database;
+    public function __construct(
+        protected Database $database
+    ) {
     }
 
     /**
