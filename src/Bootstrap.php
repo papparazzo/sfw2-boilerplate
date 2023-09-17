@@ -37,7 +37,6 @@ use Psr\Log\NullLogger;
 use SFW2\Config\Config;
 use SFW2\Config\Exceptions\ContainerException;
 use SFW2\Database\Exception;
-use SFW2\Routing\ControllerMap\ControllerMap;
 use SFW2\Routing\Dispatcher;
 use SFW2\Routing\Middleware\Error;
 use SFW2\Routing\Middleware\Offline;
