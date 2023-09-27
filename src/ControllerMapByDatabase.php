@@ -23,13 +23,13 @@
 namespace SFW2\Boilerplate;
 
 use OutOfRangeException;
-use SFW2\Database\Database;
+use SFW2\Database\DatabaseInterface;
 use SFW2\Routing\ControllerMap\ControllerMapInterface;
 
 class ControllerMapByDatabase implements ControllerMapInterface {
 
     public function __construct(
-        protected Database $database
+        protected DatabaseInterface $database
     ) {
     }
 
