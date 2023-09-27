@@ -51,7 +51,7 @@ class Installer {
 
     #[ArrayShape(['database' => "array", 'site' => "array", 'project' => "array", 'defEMailAddr' => "string[]", 'misc' => "array"])]
     protected function getConfigArray(): array {
-        $host = $this->ioInterface->ask('installation host? ');
+        $host = $this->ioInterface->ask('installation host (domain)? ');
         // TODO: Validate input!
         return [
             'database' => [
@@ -61,13 +61,11 @@ class Installer {
                 'db'     => $this->ioInterface->ask('database name? '),
                 'prefix' => $this->ioInterface->ask('database prefix? ')
             ],
-
             'site' => [
                 'offline'            => true,
                 'debugMode'          => false,
                 'offlineBypassToken' => md5(openssl_random_pseudo_bytes(64))
             ],
-
             'project' => [
                 'title'          => $this->ioInterface->ask('project title? '),
                 'eMailWebMaster' => "webmaster@$host",
@@ -76,12 +74,19 @@ class Installer {
                 'addr' => "noreply@$host",
                 'name' => 'noreply'
             ],
-
             'misc' => [
                 'timeZone'    => $this->ioInterface->ask('time zone? [' . date_default_timezone_get() . ']', date_default_timezone_get()),
                 'locale'      => $this->ioInterface->ask('locale? [' . Locale::getDefault() . ']', Locale::getDefault()),
                 'memoryLimit' => '256M'
             ],
+            'pathes' => [
+                'tmp'        => 'tmp/',
+                'log'        => 'weblog/',
+                'data'       => 'data/',
+                'templates'  => [
+                    "SFW2\\Menu"         => "/var/www/sfw2-menu/templates/",
+                ]
+            ]
         ];
     }
 
