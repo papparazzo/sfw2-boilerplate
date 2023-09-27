@@ -1,0 +1,12 @@
+<div class="mt-4 p-5  rounded">
+    <h1 class="display-3">{{title}}</h1>
+    <p class="lead">{{caption}}</p>
+    <p>{{description}}</p>
+    <p class="small">[ID: {{identifier}}]</p>
+    {{#if debugData}}
+    <hr class="my-4">
+    <p>
+        <pre class="small">{{debugData}}</pre>
+    </p>
+    {{/if}}
+</div>
