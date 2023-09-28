@@ -23,22 +23,19 @@
 namespace SFW2\Boilerplate;
 
 use OutOfRangeException;
-use SFW2\Database\Database;
+use SFW2\Database\DatabaseInterface;
 use SFW2\Database\Exception;
 use SFW2\Routing\PathMap\PathMapInterface;
 
 class PathMapByDatabase implements PathMapInterface {
 
-    protected Database $database;
-
     protected array $pathMap = [];
 
     /**
-     * * @param Database $database
-     * * @throws Exception
+     * @param DatabaseInterface $database
+     * @throws Exception
      */
-    public function __construct(Database $database) {
-        $this->database = $database;
+    public function __construct(protected DatabaseInterface $database) {
         $this->loadRootPath($this->pathMap);
     }
 
@@ -76,7 +73,6 @@ class PathMapByDatabase implements PathMapInterface {
         if(!isset($this->pathMap[$path])) {
             return;
         }
-
 
         // TODO Consider to save id in tmp and execute UPDATE ... SET ... WHERE Id IN(tmp...)
         $this->updateModificationDate($this->pathMap[$path]);
