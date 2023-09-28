@@ -36,6 +36,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\NullLogger;
 use SFW2\Config\Config;
 use SFW2\Config\Exceptions\ContainerException;
+use SFW2\Database\DatabaseInterface;
 use SFW2\Database\Exception;
 use SFW2\Routing\Dispatcher;
 use SFW2\Routing\Middleware\Error;
@@ -91,7 +92,8 @@ class Bootstrap {
     #[NoReturn]
     public function run(): void {
         /** @var Database $database */
-        $database = $this->container->get(Database::class);
+        $database = $this->container->get(DatabaseInterface::class);
+
         /** @var Session $session */
         $session = $this->container->get(Session::class);
 
