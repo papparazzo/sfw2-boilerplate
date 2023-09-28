@@ -41,9 +41,13 @@ use SFW2\Database\Exception;
 use SFW2\Routing\Dispatcher;
 use SFW2\Routing\Middleware\Error;
 use SFW2\Routing\Middleware\Offline;
+use SFW2\Routing\Render\RenderComposite;
+use SFW2\Routing\Render\RenderHtml;
 use SFW2\Routing\Render\RenderJson;
+use SFW2\Routing\Render\RenderXml;
 use SFW2\Routing\ResponseEngine;
 use SFW2\Routing\Runner;
+use SFW2\Routing\TemplateLoader;
 use SFW2\Session\Session;
 use SFW2\Database\Database;
 
@@ -103,7 +107,15 @@ class Bootstrap {
         $pathMap = new PathMapByDatabase($database);
         $psr17Factory = new Psr17Factory();
 
-        $responseEngine = new ResponseEngine(new RenderJson(), $psr17Factory);
+        $templateLoader = new TemplateLoader($this->container->get('pathes.templates'), 'SFW2\Boilerplate');
+        $render = new RenderComposite();
+        $render->addEngines(
+            new RenderJson(),
+            new RenderXml($templateLoader),
+            new RenderHtml($templateLoader, 'skeleton')
+        );
+
+        $responseEngine = new ResponseEngine($render, $psr17Factory);
 
         $router = new Router(new Runner($pathMap, $controllerMap, $this->container, $responseEngine));
         $router->addMiddleware(new Offline(new SessionSimpleCache($session), $this->container));
