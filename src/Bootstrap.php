@@ -26,6 +26,7 @@ use DI\Container;
 use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
+use InvalidArgumentException;
 use JetBrains\PhpStorm\NoReturn;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
@@ -92,6 +93,7 @@ class Bootstrap {
      * @throws DependencyException
      * @throws Exception
      * @throws NotFoundException
+     * @throws InvalidArgumentException
      */
     #[NoReturn]
     public function run(): void {
@@ -171,10 +173,10 @@ class Bootstrap {
             },
             DatabaseInterface::class => function (ContainerInterface $ci) {
                 return new Database(
-                    $ci->get('database.host'),
+                    $ci->get('database.dsn'),
                     $ci->get('database.user'),
                     $ci->get('database.pwd'),
-                    $ci->get('database.db'),
+                    $ci->get('database.options'),
                     $ci->get('database.prefix')
                 );
             },

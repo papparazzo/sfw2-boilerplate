@@ -45,7 +45,7 @@ class ControllerMapByDatabase implements ControllerMapInterface {
             "FROM `{TABLE_PREFIX}_path` AS `ctrlMap` " .
             "LEFT JOIN `{TABLE_PREFIX}_controller_template` AS `ctrlTempl` " .
             "ON `ctrlMap`.`ControllerTemplateId` = `ctrlTempl`.`Id` " .
-            "WHERE `ctrlMap`.`Id` = '%s' ";
+            "WHERE `ctrlMap`.`Id` = %s ";
 
         $res = $this->database->selectRow($stmt, [$pathId]);
 

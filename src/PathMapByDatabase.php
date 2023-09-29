@@ -58,7 +58,7 @@ class PathMapByDatabase implements PathMapInterface {
      */
     protected function loadPath(array &$map, int $parentId, string $prefix = '/'): void {
 
-        $res = $this->database->select("SELECT `Id`, `Name` FROM `{TABLE_PREFIX}_path` WHERE `ParentPathId` = '%s'", [$parentId]);
+        $res = $this->database->select("SELECT `Id`, `Name` FROM `{TABLE_PREFIX}_path` WHERE `ParentPathId` = %s", [$parentId]);
 
         foreach($res as $item) {
             $map[$prefix . $item['Name']] = $item['Id'];
@@ -91,7 +91,7 @@ class PathMapByDatabase implements PathMapInterface {
      * @throws Exception
      */
     protected function updateModificationDate(int $pathId): void {
-        $this->database->update("UPDATE `{TABLE_PREFIX}_path` SET `ModificationDate` = NOW() WHERE `Id` = '%s'", [$pathId]);
+        $this->database->update("UPDATE `{TABLE_PREFIX}_path` SET `ModificationDate` = NOW() WHERE `Id` = %s", [$pathId]);
     }
 
     public function isValidPath(string $path): bool {
