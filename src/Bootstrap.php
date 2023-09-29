@@ -169,7 +169,7 @@ class Bootstrap {
             Session::class => function (ContainerInterface $ci) {
                 return new Session($ci->get('session.servername'));
             },
-            Database::class => function (ContainerInterface $ci) {
+            DatabaseInterface::class => function (ContainerInterface $ci) {
                 return new Database(
                     $ci->get('database.host'),
                     $ci->get('database.user'),
