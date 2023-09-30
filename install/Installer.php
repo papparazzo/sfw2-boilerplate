@@ -53,10 +53,9 @@ class Installer {
         // TODO: Validate input!
         return [
             'database' => [
-                'host'   => $this->ioInterface->ask('database host? [localhost]', 'localhost'),
+                'dsn'    => $this->ioInterface->ask('database dsn?'),
                 'user'   => $this->ioInterface->ask('database user? '),
                 'pwd'    => $this->ioInterface->ask('database pwd? '),
-                'db'     => $this->ioInterface->ask('database name? '),
                 'prefix' => $this->ioInterface->ask('database prefix? ')
             ],
             'site' => [
