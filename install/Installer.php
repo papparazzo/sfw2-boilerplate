@@ -23,7 +23,6 @@
 namespace SFW2\Install;
 
 use Composer\IO\IOInterface;
-use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\Yaml\Yaml;
 
 use Exception;
@@ -49,7 +48,6 @@ class Installer {
         $this->cleaningUp('install');
     }
 
-    #[ArrayShape(['database' => "array", 'site' => "array", 'project' => "array", 'defEMailAddr' => "string[]", 'misc' => "array"])]
     protected function getConfigArray(): array {
         $host = $this->ioInterface->ask('installation host (domain)? ');
         // TODO: Validate input!
