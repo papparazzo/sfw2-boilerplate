@@ -14,6 +14,39 @@
         <main class="container">
         {{{content}}}
         </main>
+        <!-- ############################################## FOOTER ############################################## -->
+        <footer class="sfw2-footer sfw2-alternative-box-color">
+            <div class="container py-5">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4>{{title}} <!--Springer Singgemeinschaft e.V.--></h4>
+                        <p class="mb-0">
+                            {{name}} <!-- FIXME -->
+                        </p>
+                        <p class="mb-0">
+                            {{street}}
+                        </p>
+                        <p class="mb-0">
+                            {{location}}
+                        </p>
+                    </div>
+                    <div class="col-md-2">
+                        <h4>Impressum</h4>
+                        <ul class="list-unstyled li-space-lg">
+                            <li>
+                                <a class="text-reset" href="/datenschutz">Datenschutz</a>
+                            </li>
+                            <li>
+                                <a class="text-reset" href="/impressum">Impressum</a>
+                            </li>
+                            <li>
+                                <a class="text-reset" href="mailto: {{email}}">Kontakt</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
         <input type="hidden" id="xssToken" value="{{xssToken}}" />
         <script defer="defer" src="js/bundle.js"></script>
     </body>
