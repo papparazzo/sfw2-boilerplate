@@ -12,3 +12,5 @@ composer.phar
 /config/config.yaml
 /public/js/
 /public/css/
+/public/img/
+/public/fonts/
