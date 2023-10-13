@@ -12,7 +12,7 @@ module.exports = {
         path: path.resolve(__dirname, 'public/js'),
     },
     devServer: {
-        static: path.resolve(__dirname, 'dist'),
+        static: path.resolve(__dirname, 'public'),
         port: 8080,
         hot: true
     },
