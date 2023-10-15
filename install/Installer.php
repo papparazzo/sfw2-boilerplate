@@ -64,12 +64,10 @@ class Installer {
                 'offlineBypassToken' => md5(openssl_random_pseudo_bytes(64))
             ],
             'project' => [
-                'title'          => $this->ioInterface->ask('project title? '),
-                'eMailWebMaster' => "webmaster@$host",
-            ],
-            'defEMailAddr' => [
-                'addr' => "noreply@$host",
-                'name' => 'noreply'
+                'title'                  => $this->ioInterface->ask('project title? '),
+                'sub_title'              => $this->ioInterface->ask('project sub title? '),
+                'webmaster_mail_address' => "webmaster@$host",
+                'default_sender_address' => "noreply@$host",
             ],
             'misc' => [
                 'timeZone'    => $this->ioInterface->ask('time zone? [' . date_default_timezone_get() . ']', date_default_timezone_get()),
