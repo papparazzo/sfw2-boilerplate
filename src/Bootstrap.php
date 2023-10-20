@@ -130,7 +130,10 @@ class Bootstrap {
             $psr17Factory  // StreamFactory
         );
 
-        $response = $router->handle($creator->fromGlobals());
+        $request = $creator->fromGlobals();
+        $request = $request->withAttribute('project', $this->container->get('project'));
+
+        $response = $router->handle($request);
 
         $x = new Dispatcher();
         $x->dispatch($response);
