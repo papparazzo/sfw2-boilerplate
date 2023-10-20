@@ -20,7 +20,7 @@
  *
  */
 
-namespace SFW2\Boilerplate;
+namespace SFW2\Boilerplate\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -29,15 +29,11 @@ use SFW2\Routing\ResponseEngine;
 
 final class StaticController extends AbstractController
 {
-    public function __construct(
-        private readonly string $template = 'impressum'
-    )
-    {
-    }
-
     public function index(Request $request, ResponseEngine $responseEngine): Response
     {
-        return $responseEngine->render($request, "SFW2\\Boilerplate\\$this->template", ['caption' => 'welt']);
+        return $responseEngine->render(
+            $request,
+            "SFW2\\Boilerplate\\{$this->additionalData->get('template')}", []);
     }
 }
 
