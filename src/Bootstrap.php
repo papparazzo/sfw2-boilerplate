@@ -103,7 +103,7 @@ class Bootstrap {
         /** @var Session $session */
         $session = $this->container->get(Session::class);
 
-        $logger = new NullLogger();
+        $logger = new NullLogger(); // FIXME Replace this
 
         $controllerMap = new ControllerMapByDatabase($database);
         $pathMap = new PathMapByDatabase($database);
