@@ -22,7 +22,7 @@
 
 namespace SFW2\Boilerplate;
 
-use SFW2\Core\Container;
+use SFW2\Routing\Container;
 use OutOfRangeException;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Routing\ControllerMap\ControllerData;
