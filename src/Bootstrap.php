@@ -39,6 +39,7 @@ use SFW2\Config\Config;
 use SFW2\Config\Exceptions\ContainerException;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Database\Exception;
+use SFW2\Menu\Middleware\MenuMiddleware; // FIXME: use namespace from config.yaml
 use SFW2\Routing\Dispatcher;
 use SFW2\Routing\Middleware\Error;       // FIXME: use namespace from config.yaml
 use SFW2\Routing\Middleware\Offline;     // FIXME: use namespace from config.yaml
@@ -120,6 +121,7 @@ class Bootstrap {
         $responseEngine = new ResponseEngine($render, $psr17Factory);
 
         $router = new Router(new Runner($pathMap, $controllerMap, $this->container, $responseEngine));
+        $router->addMiddleware(new MenuMiddleware($this->container->get(DatabaseInterface::class), $pathMap));
         $router->addMiddleware(new Offline(new SessionSimpleCache($session), $this->container));
         $router->addMiddleware(new Error($responseEngine, $this->container, $logger));
 
