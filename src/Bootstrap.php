@@ -133,7 +133,7 @@ class Bootstrap {
         );
 
         $request = $creator->fromGlobals();
-        $request = $request->withAttribute('project', $this->container->get('project'));
+        $request = $request->withAttribute('sfw2_project', $this->container->get('project'));
 
         $response = $router->handle($request);
 
