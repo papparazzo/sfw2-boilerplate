@@ -6,13 +6,127 @@
         <title>{{sfw2_project.title}}</title>
         <link rel="stylesheet" href="css/bundle.css">
         <link rel="shortcut icon" href="" />
-        <meta property="og:image" content="">
-        <link rel="icon" type="image/png" href="/img/layout/icon.png" sizes="32x32" />
-        <link rel="shortcut icon" href="/public/layout/favicon.ico" />
+        <meta property="og:image" content=""> <!-- FIXME: content needed! -->
+        <meta name="description" content="Springer Singgemeinschaft - Singen soll Freude bringen">
+        <link rel="icon" type="image/png" href="/img/layout/favicon.svg" sizes="32x32" />
+        <link rel="shortcut icon" href="/img/layout/favicon.ico" />
+        <script defer src="js/bundle.js"></script>
     </head>
     <body>
-        <main class="container">
-        {{{content}}}
+        <!-- ############################################## DIALOGS ############################################# -->
+        <div class="modal fade" id="sfw2-dialog-modal"  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header sfw2-no-border">
+                        <h1 id="dialogTitle" class="modal-title fs-5" ></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="dialogBody" class="modal-body">
+                    </div>
+                    <div class="modal-footer sfw2-no-border">
+                        <button
+                            id="sfw2-dialog-button-send"
+                            type="button"
+                            class="btn btn-secondary"
+                        >
+                            Daten abschicken
+                        </button>
+<!--
+                                    <button
+                id="{{sfw2_routing.path_simplified}}_button"
+                type="button" class="btn btn-secondary"
+            >Nachricht abschicken</button>
+-->
+                        {{! FIXME Das Gaestebuch bringt seine eigene Buttons mit...
+                        <button id="editDialogSaveButton" type="button" class="btn btn-success btn-sm submit-form">speichern</button>
+                        <button type="reset" class="btn btn-danger btn-sm reset" data-dismiss="modal">abbrechen</button>
+                    }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="sfw2-error-dialog-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="errorDialogModalLabel" aria-hidden="true" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 id="errorDialogTitle" class="modal-title fs-5" ></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorDialogBody" class="modal-body">
+                        Die Anfrage-Nachricht enthielt ungültige Daten. Bitte prüfe die URL auf Fehler und drücke dann den reload-Button in deinem Browser.
+                    </div>
+                    <div class="small modal-body">
+                        [ID: DA01137E776ED99E18F968AB022C7587]
+                    </div>
+                    <div class="modal-footer">
+                        <button data-bs-dismiss="modal" type="button" class="btn btn-secondary">okay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ############################################## HEADER ############################################## -->
+        {{#if sfw2_routing.is_home}}
+        <script defer src="js/sfw2_home.js"></script>
+        <header class="sfw2-header-container">
+            <div class="sfw2-header-bg-image">
+                <div class="container d-flex align-items-end">
+                    <div class="mb-5 sfw2-alternative-fore-color">
+                        <h1 class="display-1"><strong>{{sfw2_project.title}}</strong></h1>
+                        <h3>{{sfw2_project.sub_title}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="container pt-5">
+                <h1>Hallo und herzlich Willkommen!</h1>
+                <p class="text-center fw-bold fs-4 sfw2-animate">
+                    <a id="goto-page-content-start" class="text-reset" href="#page-content-start">
+                        <i class="bi bi-chevron-double-down"></i>
+                    </a>
+                </p>
+            </div>
+        </header>
+        {{/if}}
+        <!--############################################ NAVIGATION ############################################# -->
+        <header id="page-content-start" class="sticky-top">
+            <a class="navbar-brand" href="/#page-content-start">
+                <h3 class="sfw2-alternative-box-color p-3 m-0">{{sfw2_project.sub_title}}</h3>
+            </a>
+            <nav id="navigation" class="navbar navbar-expand-lg bg-body-tertiary sfw2-bottom-shaddow">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/#page-content-start">
+                        <i class="bi bi-music-note {{#if sfw2_routing.is_home}}sfw2-active-fore-color{{/if}}"></i>
+                    </a>
+                    <button
+                        class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+                    >
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            {{#each sfw2_menu}}
+                            <li class="nav-item" >
+                                <a class="nav-link {{#if active}}active{{/if}}" href="{{href}}">{{name}}</a>
+                            </li>
+                            {{/each}}
+                        </ul>{{!
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="cursor: pointer">
+                                    <i class="bi bi-person-lock"></i>
+                                    <i class="bi bi-person-check"></i>
+                                </a>
+                            </li>
+                        </ul>}}
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <!-- ############################################# CONTENT ############################################## -->
+        <main class="container py-5">
+            <div class="py-5">
+            {{{content}}}
+            </div>
         </main>
         <!-- ############################################## FOOTER ############################################## -->
         <footer class="sfw2-footer sfw2-alternative-box-color">
@@ -48,6 +162,5 @@
             </div>
         </footer>
         <input type="hidden" id="xssToken" value="{{xssToken}}" />
-        <script defer="defer" src="js/bundle.js"></script>
     </body>
 </html>
