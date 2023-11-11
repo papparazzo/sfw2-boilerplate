@@ -22,6 +22,8 @@
 
 namespace SFW2\Boilerplate\Controller;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SFW2\Routing\AbstractController;
@@ -29,6 +31,10 @@ use SFW2\Routing\ResponseEngine;
 
 final class StaticController extends AbstractController
 {
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function index(Request $request, ResponseEngine $responseEngine): Response
     {
         return $responseEngine->render(
