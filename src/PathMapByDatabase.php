@@ -88,7 +88,6 @@ class PathMapByDatabase implements PathMapInterface {
     /**
      * @param int $pathId
      * @return void
-     * @throws Exception
      */
     protected function updateModificationDate(int $pathId): void {
         $this->database->update("UPDATE `{TABLE_PREFIX}_path` SET `ModificationDate` = NOW() WHERE `Id` = %s", [$pathId]);
