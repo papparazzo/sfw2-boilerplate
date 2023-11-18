@@ -93,12 +93,12 @@ class PathMapByDatabase implements PathMapInterface {
         $this->database->update("UPDATE `{TABLE_PREFIX}_path` SET `ModificationDate` = NOW() WHERE `Id` = %s", [$pathId]);
     }
 
-    public function isValidPath(string $path): bool {
+    public function hasPath(string $path): bool {
         return isset($this->pathMap[$path]);
     }
 
     public function getPathId(string $path): int {
-        if(!$this->isValidPath($path)) {
+        if(!$this->hasPath($path)) {
             throw new OutOfRangeException("invalid path <$path> given");
         }
         return $this->pathMap[$path];
