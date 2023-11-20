@@ -98,6 +98,7 @@ class Bootstrap {
      * @throws Exception
      * @throws NotFoundException
      * @throws InvalidArgumentException
+     * @throws PermissionException
      */
     #[NoReturn]
     public function run(): void {
