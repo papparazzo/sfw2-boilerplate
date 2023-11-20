@@ -27,7 +27,8 @@ use SFW2\Database\DatabaseInterface;
 use SFW2\Database\Exception;
 use SFW2\Routing\PathMap\PathMapInterface;
 
-class PathMapByDatabase implements PathMapInterface {
+class PathMapByDatabase implements PathMapInterface
+{
 
     protected array $pathMap = [];
 
@@ -35,14 +36,16 @@ class PathMapByDatabase implements PathMapInterface {
      * @param DatabaseInterface $database
      * @throws Exception
      */
-    public function __construct(protected DatabaseInterface $database) {
+    public function __construct(protected DatabaseInterface $database)
+    {
         $this->loadRootPath($this->pathMap);
     }
 
     /**
      * @throws Exception
      */
-    protected function loadRootPath(array &$map): void {
+    protected function loadRootPath(array &$map): void
+    {
         $item = $this->database->selectRow("SELECT `Id`, `Name` FROM `{TABLE_PREFIX}_path` WHERE `ParentPathId` IS NULL");
 
         $map['/'] = $item['Id'];
@@ -69,7 +72,8 @@ class PathMapByDatabase implements PathMapInterface {
     /**
      * @throws Exception
      */
-    public function updateModificationDateRecursive(string $path): void {
+    public function updateModificationDateRecursive(string $path): void
+    {
         if(!isset($this->pathMap[$path])) {
             return;
         }
@@ -89,22 +93,26 @@ class PathMapByDatabase implements PathMapInterface {
      * @param int $pathId
      * @return void
      */
-    protected function updateModificationDate(int $pathId): void {
+    protected function updateModificationDate(int $pathId): void
+    {
         $this->database->update("UPDATE `{TABLE_PREFIX}_path` SET `ModificationDate` = NOW() WHERE `Id` = %s", [$pathId]);
     }
 
-    public function hasPath(string $path): bool {
+    public function hasPath(string $path): bool
+    {
         return isset($this->pathMap[$path]);
     }
 
-    public function getPathId(string $path): int {
+    public function getPathId(string $path): int
+    {
         if(!$this->hasPath($path)) {
             throw new OutOfRangeException("invalid path <$path> given");
         }
         return $this->pathMap[$path];
     }
 
-    public function getPath(int $pathId): string {
+    public function getPath(int $pathId): string
+    {
         $res = array_search($pathId, $this->pathMap);
         if($res === false) {
             throw new OutOfRangeException("path for id <$pathId> does not exists");
@@ -112,7 +120,8 @@ class PathMapByDatabase implements PathMapInterface {
         return $res;
     }
 
-    public function getPathIdOfParentPath(string $currentPath): int {
+    public function getPathIdOfParentPath(string $currentPath): int
+    {
         $chunks =  explode('/', $currentPath);
         if($chunks[1] == '') {
             throw new OutOfRangeException("invalid path <$currentPath> given");
