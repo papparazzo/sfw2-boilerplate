@@ -35,6 +35,9 @@ use Psr\Container\ContainerInterface;
 
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\NullLogger;
+use SFW2\Authority\Middleware\Authorisation; // FIXME: use namespace from config.yaml
+use SFW2\Authority\Permission\Permission;
+use SFW2\Authority\Permission\PermissionException;
 use SFW2\Config\Config;
 use SFW2\Config\Exceptions\ContainerException;
 use SFW2\Database\DatabaseInterface;
@@ -120,9 +123,11 @@ class Bootstrap {
 
         $responseEngine = new ResponseEngine($render, $psr17Factory);
 
-        $router = new Router(new Runner($pathMap, $controllerMap, $this->container, $responseEngine));
-        $router->addMiddleware(new MenuMiddleware($this->container->get(DatabaseInterface::class), $pathMap));
+        $router = new Router(new Runner($controllerMap, $this->container, $responseEngine), $pathMap);
+        // TODO: get middlewares from config and iterate!
         $router->addMiddleware(new Offline(new SessionSimpleCache($session), $this->container));
+        $router->addMiddleware(new MenuMiddleware($database, $pathMap));
+        $router->addMiddleware(new Authorisation(new Permission($database)));
         $router->addMiddleware(new Error($responseEngine, $this->container, $logger));
 
         $creator = new ServerRequestCreator(
