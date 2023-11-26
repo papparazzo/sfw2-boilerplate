@@ -247,11 +247,11 @@ $(document).on('click', '.sfw2-contact-button-send', function(e){
 
 function showErrorDialog(response) {
     //$('#xssToken').val(response.xss); FIXME: add xssToken
-    $('#errorDialogTitle').html(`[${response.title}] ${response.caption}`);
-    $('#errorDialogBody').html(response.description);
+    $('#sfw2-common-dialog-title').html(`[${response.title}] ${response.caption}`);
+    $('#sfw2-common-dialog-body').html(response.description);
     $('#errorDialogId').html(`[ID: ${response.identifier}]`);
 
-    const myModal = new bootstrap.Modal('#sfw2-error-dialog-modal', {});
+    const myModal = new bootstrap.Modal('#sfw2-common-dialog-modal', {});
     myModal.show();
 }
 
