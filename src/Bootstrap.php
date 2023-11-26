@@ -191,6 +191,12 @@ class Bootstrap {
                     $ci->get('database.prefix')
                 );
             },
+            DateTimeHelper::class => function (ContainerInterface $ci) {
+                return new DateTimeHelper(
+                    $ci->get('misc.timeZone'),
+                    $ci->get('misc.locale')
+                );
+            }
         ]);
         return $builder->build();
     }
