@@ -40,6 +40,7 @@ use SFW2\Authority\Permission\Permission;
 use SFW2\Authority\Permission\PermissionException;
 use SFW2\Config\Config;
 use SFW2\Config\Exceptions\ContainerException;
+use SFW2\Core\Utils\DateTimeHelper;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Database\Exception;
 use SFW2\Menu\Middleware\MenuMiddleware; // FIXME: use namespace from config.yaml
