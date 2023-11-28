@@ -46,7 +46,6 @@ function printMsg(that, msg, type) {
     that.html(msg);
 }
 
-//$('#sfw2-dialog-modal').on('show.bs.modal', function (event) {
 document.getElementById('sfw2-dialog-modal').addEventListener('show.bs.modal', function(event)  {
 
     let button = $(event.relatedTarget);
@@ -107,26 +106,26 @@ document.getElementById('sfw2-dialog-modal').addEventListener('show.bs.modal', f
     let sendButton = $('#sfw2-dialog-button-send');
 
  //   sendButton.data('target', that.next());
-    sendButton.data('sfw2-itemId', itemId ? itemId : 0);
-    sendButton.data('sfw2-formId', formId);
+    sendButton.data('sfw2-item-id', itemId ? itemId : 0);
+    sendButton.data('sfw2-form-id', formId);
     sendButton.data('sfw2-url', button.data('sfw2-url'));
+    sendButton.data('sfw2-inline', false);
 });
 
-//$('#sfw2-dialog-button-send').
-
-$(document).on('click', '.sfw2-contact-button-send', function(e){
+$(document).on('click', '.sfw2-button-send', function(e){
     let that = $(this);
 
     let formData;
-    //if($('#dialogBody form')) {
-    //    formData = $('#dialogBody form').serializeArray();
-    //} else {
-        formData = $('#' + that.data('sfw2-form-id')).serializeArray();
-    //}
+    let form;
 
-    formData.push({name : 'xss', value : $('#xssToken').val()});
+    if(that.data('sfw2-inline')) {
+        form = $('#' + that.data('sfw2-form-id'));
+    } else {
+        form = $('#dialogBody form');
+    }
 
-
+    formData = form.serializeArray();
+    formData.push({name : 'xss', value : $('#sfw2_xss_token').val()});
 
     /*
     let f = $("#createForm input:file");
@@ -136,8 +135,7 @@ $(document).on('click', '.sfw2-contact-button-send', function(e){
         return;
     }
 */
-    let itemId = that.data('sfw2-itemId');
-    let formId = that.data('sfw2-formId');
+    let itemId = that.data('sfw2-item-id');
 
     if(itemId > 0) {
         formData.push({name : 'id', value : itemId});
@@ -162,7 +160,7 @@ $(document).on('click', '.sfw2-contact-button-send', function(e){
             "accept":           "application/json"
         },
         success: function(response) {
-            $('#xssToken').val(response.xss);
+            $('#sfw2_xss_token').val(response.xss);
             let entries = response.data;
 
             for(let key in entries) {
@@ -201,9 +199,13 @@ $(document).on('click', '.sfw2-contact-button-send', function(e){
                 let offset = +target.data('offset') || 0;
                 target.data('offset', ++offset);
             }*/
+            /*
             if(bootstrap.Modal.getInstance('#sfw2-dialog-modal')){
                 bootstrap.Modal.getInstance('#sfw2-dialog-modal').hide();
             }
+
+             */
+            location.reload();
         },
         error: function(response) {
             if(response.status !== 422) {
@@ -213,14 +215,10 @@ $(document).on('click', '.sfw2-contact-button-send', function(e){
                 showErrorDialog(response.responseJSON);
             }
 
-            // FIXME Unterscheiden zwischen Dialog und inline
-            //let elems = $('#dialogBody');
-            let elems = $('#p__kontakt');
-
             let entries = response.responseJSON.sfw2_payload;
 
             for(let key in entries) {
-                let item = elems.find('[name=' + key + ']'); // FIXME: Hier nur Formelement im Modal-Dialog durchsuchen -> item.length ist hier 2!!!
+                let item = form.find('[name=' + key + ']'); // FIXME: Hier nur Formelement im Modal-Dialog durchsuchen -> item.length ist hier 2!!!
 
                 if(item.length === 0) {
                     // FIXME Spezialfall TextArea mit CKEditor: // border color = #dc3545
@@ -245,8 +243,11 @@ $(document).on('click', '.sfw2-contact-button-send', function(e){
     });
 });
 
+//sfw2-login-logout-button
+
+
 function showErrorDialog(response) {
-    //$('#xssToken').val(response.xss); FIXME: add xssToken
+    //$('#sfw2_xss_token').val(response.xss); FIXME: add xssToken
     $('#sfw2-common-dialog-title').html(`[${response.title}] ${response.caption}`);
     $('#sfw2-common-dialog-body').html(response.description);
     $('#errorDialogId').html(`[ID: ${response.identifier}]`);
@@ -255,164 +256,6 @@ function showErrorDialog(response) {
     myModal.show();
 }
 
-
-/*
-
-document.getElementById('editDialogModal').addEventListener('show.bs.modal', function(event)  {
-    const button = event.relatedTarget;
-    const formId = button.dataset.sfw2FormId;
-
-    document.getElementById('dialogBody').innerHTML = document.getElementById(formId).innerHTML;
-
-    document.getElementById('dialogButton').addEventListener('click', function(){
-            let that = this;
-            const url =  that.dataset.sfw2Url;
-
-            let form = document.getElementById('dialogBody').firstChild;
-
-            while((form = form.nextSibling)) {
-                if(form.nodeType === 1) {
-                    break;
-                }
-            }
-
-            let formData = new FormData(form);
-
-        formData.append('xss', document.getElementById('xssToken').value);
-
-    const values = Object.fromEntries(formData.entries());
-
-    try {
-        fetch(
-            '/gaestebuch?do=create',
-            {
-                method: "POST", // or 'PUT'
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                    "accept": "application/json"
-                },
-                body: JSON.stringify(values),
-            }
-        ).then(
-            r => r.json().then(data => ({status: r.status, body: data}))
-        ).then(function (obj) {
-            let data = obj.body;
-            for(let key in data) {
-                let item = form.elements[key];
-                if(!item) {
-                    continue;
-                }
-
-                if(item.length !== 0) {
-                    if(data[key].hint) {
-                        item.classList.add('is-invalid');
-                        let e = item;
-                        while((e = e.nextSibling)) {
-                            if(e.nodeType === 1 && e.classList.contains('invalid-feedback')) {
-                                e.innerHTML = data[key].hint;
-                                break;
-                            }
-                        }
-                    } else {
-                        item.classList.remove('is-invalid');
-                    }
-                }
-            }
-            if(obj.status >= 500) {
-                // TODO: Fehler!
-                return;
-            }
-
-            if(obj.status === 422) {
-                return;
-            }
-
-            that.classList.add('d-none');
-            //document.getElementById(id + '_send_notification').classList.remove('d-none')
-
-            //that.disabled = false;
-        });
-    } catch (error) {
-        that.disabled = false;
-        console.error("Error:", error);
-    }
-    });
-
-    //$('#createForm').html($('#' + formId).html());
-
-    //const myInput = document.getElementById('myInput')
-    //myInput.focus()
-
-    //let itemId = button.data('item-id');
-    document.getElementById('dialogTitle').innerText = 'Neuen Eintrag erstellen...';
-});
-
-
-
-/*
-
-
-$('#createDialogModal').on('show.bs.modal', function (event) {
-    let button = $(event.relatedTarget);
-    let itemId = button.data('item-id');
-    let formId = button.data('form-id');
-
-    $('#createForm').html($('#' + formId).html());
-
-    if(itemId) {
-        $('#editTitle').html('Eintrag bearbeiten...');
-        $('#createForm').each(function() {
-            $(this).find(':input').each(function() {
-                let name = '';
-                if(typeof $(this).attr("name") === "undefined") {
-                    name = $(this).data('name')
-                } else {
-                    name = $(this).attr("name");
-                }
-
-                let idx = '#' + formId + '_' + name  + '_' + itemId;
-                if($(this).is('select')) {
-                    $(this).find('option').filter(function() {
-                        return this.text === $(idx).html();
-                    }).attr('selected', true);
-                } else {
-                    $(this).val($(idx).html());
-                }
-            });
-        });
-    } else {
-        $('#editTitle').html('Neuen Eintrag erstellen...');
-    }
-
-    $('#createForm').find('textarea').each(function() {
-        if($(this).attr('id')) {
-            ClassicEditor.create(
-                document.querySelector('#' + $(this).attr('id')),
-                {
-                    simpleUpload: {
-                        uploadUrl: button.data('url') + '?do=addImage'
-                    }
-                }
-            ).then( newEditor => { editor = newEditor;
-            }).catch(error => {
-                console.error(error);
-            });
-        }
-    });
-
-    let that = button.parents('thead');
-    if(!that.length) {
-        that = button;
-    }
-
-    $('#createDialogSaveButton').data('target', that.next());
-    $('#createDialogSaveButton').data('itemId', itemId ? itemId : 0);
-    $('#createDialogSaveButton').data('formId', formId);
-    $('#createDialogSaveButton').data('url', button.data('url'));
-});
-*/
-
 function showError(title, message) {
     document.getElementById('dialogTitle').innerText = title;
     document.getElementById('dialogBody').innerHTML = message;
@@ -420,3 +263,85 @@ function showError(title, message) {
     const myModalAlternative = new bootstrap.Modal('#editDialogModal');
     myModalAlternative.show();
 }
+
+/*
+$('a, input:button, button').each(function() {
+    $(this).focus(function() {
+        if(this.blur) {
+            this.blur();
+        }
+    });
+});
+*/
+
+
+
+
+
+
+
+
+/*
+
+$('#deleteDialogModal').on('show.bs.modal', function (event) {
+    const button = $(event.relatedTarget);
+    const itemId = button.data('item-id');
+    const formId = button.data('form-id');
+    const delUrl = button.data('url');
+    const modal = $(this);
+
+    const titleItem = $('#' + formId + '_title_' + itemId);
+
+    $('#deleteDialogAcceptButton').data('item-id', itemId);
+    $('#deleteDialogAcceptButton').data('form-id', formId);
+    $('#deleteDialogAcceptButton').data('del-url', delUrl);
+    $('#deleteDialogAcceptButton').data('target', button.closest('.reload-data'));
+
+    let title = titleItem.text();
+    if(!title.length) {
+        title = titleItem.val();
+    }
+
+    title = $.trim(title);
+    if(title.length) {
+        title = '"' + title + '"';
+    }
+
+    modal.find('.modal-content-title').text(title);
+});
+
+$('#deleteDialogAcceptButton').click(function() {
+    const that = $(this);
+    const itemId = that.data('item-id');
+    const formId = that.data('form-id');
+    const url = that.data('del-url');
+    const target = that.data('target');
+
+    $.ajax({
+        type: "POST",
+        url:  url + '?do=delete',
+        dataType: "json",
+        data: {
+            id: itemId,
+            xss: $('#sfw2_xss_token').val()
+        },
+        success: function(response) {
+            let id = itemId.toString().replace(".", "_");
+
+            if(response.reload) {
+                window.location.reload();
+                return;
+            }
+            $('#sfw2_xss_token').val(response.xss);
+            $('#deleteDialogModal').modal('hide');
+            $('#' + formId + '_recordset_' + id).fadeOut(1250, function() {$(this).remove();});
+            loadEntries(target, url, 1);
+        },
+        error: function(response) {
+            $('#deleteDialogModal').modal('hide');
+            showErrorDialog(response.responseJSON);
+        }
+    });
+});
+
+ */
