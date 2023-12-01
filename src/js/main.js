@@ -46,7 +46,7 @@ function printMsg(that, msg, type) {
     that.html(msg);
 }
 
-document.getElementById('sfw2-dialog-modal').addEventListener('show.bs.modal', function(event)  {
+document.getElementById('sfw2-form-dialog-modal').addEventListener('show.bs.modal', function(event)  {
 
     let button = $(event.relatedTarget);
     let itemId = button.data('sfw2-item-id');
@@ -200,8 +200,8 @@ $(document).on('click', '.sfw2-button-send', function(e){
                 target.data('offset', ++offset);
             }*/
             /*
-            if(bootstrap.Modal.getInstance('#sfw2-dialog-modal')){
-                bootstrap.Modal.getInstance('#sfw2-dialog-modal').hide();
+            if(bootstrap.Modal.getInstance('#sfw2-form-dialog-modal')){
+                bootstrap.Modal.getInstance('#sfw2-form-dialog-modal').hide();
             }
 
              */
@@ -209,8 +209,8 @@ $(document).on('click', '.sfw2-button-send', function(e){
         },
         error: function(response) {
             if(response.status !== 422) {
-                if(bootstrap.Modal.getInstance('#sfw2-dialog-modal')){
-                    bootstrap.Modal.getInstance('#sfw2-dialog-modal').hide();
+                if(bootstrap.Modal.getInstance('#sfw2-form-dialog-modal')){
+                    bootstrap.Modal.getInstance('#sfw2-form-dialog-modal').hide();
                 }
                 showErrorDialog(response.responseJSON);
             }
