@@ -14,7 +14,7 @@
     </head>
     <body>
         <!-- ############################################## DIALOGS ############################################# -->
-        <div class="modal fade" id="sfw2-dialog-modal"  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="sfw2-form-dialog-modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header sfw2-no-border">
@@ -39,19 +39,32 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 id="sfw2-common-dialog-title" class="modal-title fs-5">[500] Interner Fehler aufgetreten!</h1>
+                        <h1 id="sfw2-common-dialog-title" class="modal-title fs-5"></h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div id="sfw2-common-dialog-body" class="modal-body">
-                        Die Anfrage-Nachricht enthielt ungültige Daten. Bitte prüfe die URL auf Fehler und drücke dann
-                        den reload-Button in deinem Browser.
-                    </div>
-                    <div id="errorDialogId" class="small modal-body">
-                    </div>
+                    <div id="sfw2-common-dialog-body" class="modal-body"></div>
+                    <div id="sfw2-common-dialog-identifier" class="small modal-body"></div>
                     <div class="modal-footer">
                         <button data-bs-dismiss="modal" type="button" class="btn btn-secondary">okay</button>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="modal fade" id="sfw2-delete-dialog-modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Eintrag löschen?</h4>
+                    </div>
+                    <div class="modal-body">
+                        Soll der Eintrag <strong id="sfw2-delete-content-title"></strong> wirklich gelöscht werden?
+                    </div>
+                    <div class="modal-footer">
+                        <button id="sfw2-delete-accept-button" type="button" class="btn btn-secondary">okay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
             </div>
         </div>
         <!-- ############################################## HEADER ############################################## -->
