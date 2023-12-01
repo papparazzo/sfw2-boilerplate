@@ -245,24 +245,34 @@ $(document).on('click', '.sfw2-button-send', function(e){
 
 //sfw2-login-logout-button
 
-
 function showErrorDialog(response) {
-    //$('#sfw2_xss_token').val(response.xss); FIXME: add xssToken
+    const found = response.identifier.match(/^[A-F0-9]{32}$/g);
+    if (found) {
+        response.identifier = `ID: ${response.identifier}`;
+    }
+    $('#sfw2-common-dialog-identifier').html(`[${response.identifier}]`);
     $('#sfw2-common-dialog-title').html(`[${response.title}] ${response.caption}`);
     $('#sfw2-common-dialog-body').html(response.description);
-    $('#errorDialogId').html(`[ID: ${response.identifier}]`);
+    //$('#sfw2_xss_token').val(response.xss); FIXME: add xssToken
 
     const myModal = new bootstrap.Modal('#sfw2-common-dialog-modal', {});
     myModal.show();
 }
 
-function showError(title, message) {
-    document.getElementById('dialogTitle').innerText = title;
-    document.getElementById('dialogBody').innerHTML = message;
+window.onerror = function(err) {
+    let response = {
+        title: '500',
+        caption: 'Interner Fehler aufgetreten!',
+        description: 'Es ist ein unbekannter Fehler aufgetreten. ' +
+            'Bitte prüfe die URL auf Fehler und drücke dann\n' +
+            'den reload-Button in deinem Browser.',
+        identifier: err
+    };
+    showErrorDialog(response);
+    //TODO Consider to send report via ajax
+    return true;
+};
 
-    const myModalAlternative = new bootstrap.Modal('#editDialogModal');
-    myModalAlternative.show();
-}
 
 /*
 $('a, input:button, button').each(function() {
