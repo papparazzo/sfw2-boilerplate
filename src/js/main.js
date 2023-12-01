@@ -284,28 +284,19 @@ $('a, input:button, button').each(function() {
 });
 */
 
-
-
-
-
-
-
-
-/*
-
-$('#deleteDialogModal').on('show.bs.modal', function (event) {
+document.getElementById('sfw2-delete-dialog-modal').addEventListener('show.bs.modal', function(event)  {
     const button = $(event.relatedTarget);
-    const itemId = button.data('item-id');
-    const formId = button.data('form-id');
-    const delUrl = button.data('url');
-    const modal = $(this);
+    const itemId = button.data('sfw2-item-id');
+    const formId = button.data('sfw2-form-id');
+    const delUrl = button.data('sfw2-url');
 
     const titleItem = $('#' + formId + '_title_' + itemId);
 
-    $('#deleteDialogAcceptButton').data('item-id', itemId);
-    $('#deleteDialogAcceptButton').data('form-id', formId);
-    $('#deleteDialogAcceptButton').data('del-url', delUrl);
-    $('#deleteDialogAcceptButton').data('target', button.closest('.reload-data'));
+    const delButton = $('#sfw2-delete-accept-button');
+    delButton.data('item-id', itemId);
+    delButton.data('form-id', formId);
+    delButton.data('del-url', delUrl);
+    delButton.data('target', button.closest('.reload-data'));
 
     let title = titleItem.text();
     if(!title.length) {
@@ -316,11 +307,10 @@ $('#deleteDialogModal').on('show.bs.modal', function (event) {
     if(title.length) {
         title = '"' + title + '"';
     }
-
-    modal.find('.modal-content-title').text(title);
+    $('#sfw2-delete-content-title').text(title);
 });
 
-$('#deleteDialogAcceptButton').click(function() {
+$('#sfw2-delete-accept-button').click(function() {
     const that = $(this);
     const itemId = that.data('item-id');
     const formId = that.data('form-id');
@@ -330,7 +320,10 @@ $('#deleteDialogAcceptButton').click(function() {
     $.ajax({
         type: "POST",
         url:  url + '?do=delete',
-        dataType: "json",
+        headers : {
+            "X-Requested-With": "XMLHttpRequest",
+            "accept":           "application/json"
+        },
         data: {
             id: itemId,
             xss: $('#sfw2_xss_token').val()
@@ -342,16 +335,14 @@ $('#deleteDialogAcceptButton').click(function() {
                 window.location.reload();
                 return;
             }
-            $('#sfw2_xss_token').val(response.xss);
-            $('#deleteDialogModal').modal('hide');
+            //$('#sfw2_xss_token').val(response.xss);
+            bootstrap.Modal.getInstance('#sfw2-delete-dialog-modal').hide();
             $('#' + formId + '_recordset_' + id).fadeOut(1250, function() {$(this).remove();});
-            loadEntries(target, url, 1);
         },
         error: function(response) {
-            $('#deleteDialogModal').modal('hide');
+            bootstrap.Modal.getInstance('#sfw2-delete-dialog-modal').hide();
             showErrorDialog(response.responseJSON);
         }
     });
 });
 
- */
