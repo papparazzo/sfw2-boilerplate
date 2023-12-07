@@ -60,6 +60,7 @@ use SFW2\Database\Database;
 use SFW2\Routing\Router;
 
 use ErrorException;
+use SFW2\Session\SessionInterface;
 use SFW2\Session\SessionSimpleCache;
 use Symfony\Component\Yaml\Yaml;
 
@@ -107,7 +108,7 @@ class Bootstrap {
         $database = $this->container->get(DatabaseInterface::class);
 
         /** @var Session $session */
-        $session = $this->container->get(Session::class);
+        $session = $this->container->get(SessionInterface::class);
 
         $logger = new NullLogger(); // FIXME Replace this
 
@@ -180,7 +181,7 @@ class Bootstrap {
         $builder->addDefinitions([
             'session.servername' => $this->server['SERVER_NAME'],
 
-            Session::class => function (ContainerInterface $ci) {
+            SessionInterface::class => function (ContainerInterface $ci) {
                 return new Session($ci->get('session.servername'));
             },
             DatabaseInterface::class => function (ContainerInterface $ci) {
