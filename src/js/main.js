@@ -154,7 +154,6 @@ $(document).on('click', '.sfw2-button-send', function(e){
         type: "POST",
         url:  that.data('sfw2-url') + '?do=' + (itemId > 0 ? 'update' : 'create'),
         data: formData,
-        //dataType: "json",
         headers : {
             "X-Requested-With": "XMLHttpRequest",
             "accept":           "application/json"
