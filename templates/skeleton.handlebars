@@ -117,12 +117,14 @@
                             <li class="nav-item">
                                 <a class="nav-link" style="cursor: pointer">
                                     <i
-                                        id="sfw2-login-logout-button"
                                         class="bi {{#if sfw2_authority.authenticated}}bi-person-check{{else}}bi-person-lock{{/if}}"
                                         {{#if sfw2_authority.authenticated}}
                                         title="Angemeldet als '{{sfw2_authority.user_name}}'"
+                                        id="sfw2-logout-button"
                                         {{else}}
                                         title="hier klicken um sich anzumelden..."
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#sfw2-login-dialog-modal"
                                         {{/if}}
                                     ></i>
                                 </a>
