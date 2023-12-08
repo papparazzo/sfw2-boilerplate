@@ -52,7 +52,7 @@ ALTER TABLE `{TABLE_PREFIX}_path`
     ADD CONSTRAINT `Template` FOREIGN KEY (`ControllerTemplateId`) REFERENCES `{TABLE_PREFIX}_controller_template` (`Id`);
 
 INSERT INTO `{TABLE_PREFIX}_controller_template` (`Id`, `ClassName`, `DisplayName`, `Description`, `Data`) VALUES
-    (1, 'SFW2\\Boilerplate\\StaticController', 'Static', 'Statischer Inhalt', '');
+    (1, 'SFW2\\Boilerplate\\Controller\\StaticController', 'Static', 'Statischer Inhalt', '');
 
 INSERT INTO `{TABLE_PREFIX}_path` (`Id`, `ParentPathId`, `Name`, `ControllerTemplateId`, `JsonData`, `ModificationDate`) VALUES
     (0, NULL, '', 1, '[]', NULL);
