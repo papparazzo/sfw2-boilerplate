@@ -86,13 +86,13 @@ class Bootstrap {
      * @throws ContainerException
      */
     public function __construct(array $server, array $get, array $post, string $configFile) {
-        $this->rootPath  = __DIR__;
+        $this->rootPath  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
         $this->server    = $server;
         $this->get       = $get;
         $this->post      = $post;
         $this->container = $this->getContainer($configFile);
 
-        $this->setUpEnvironment();
+        $this->setUpEnvironment($this->container);
     }
 
     /**
@@ -130,7 +130,7 @@ class Bootstrap {
         // TODO: get middlewares from config and iterate!
         $router->addMiddleware(new Offline(new SessionSimpleCache($session), $this->container));
         $router->addMiddleware(new MenuMiddleware($database, $pathMap));
-        $router->addMiddleware(new Authorisation(new Permission($database)));
+        $router->addMiddleware(new Authorisation(new Permission($database), $session, $database));
         $router->addMiddleware(new Error($responseEngine, $this->container, $logger));
 
         $creator = new ServerRequestCreator(
@@ -153,8 +153,9 @@ class Bootstrap {
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function setUpEnvironment(): void {
-        if($this->container->get('site.debugMode')) {
+    protected function setUpEnvironment(Container $container): void
+    {
+        if($container->get('site.debugMode')) {
             error_reporting(E_ALL);
             ini_set('display_errors', true);
         } else {
@@ -164,20 +165,50 @@ class Bootstrap {
 
         set_error_handler([$this, 'errorHandler']);
         mb_internal_encoding('UTF-8');
-        ini_set('memory_limit', $this->container->get('misc.memoryLimit'));
-        ini_set(LC_ALL, $this->container->get('misc.locale'));
-        setlocale(LC_TIME, $this->container->get('misc.locale') . ".UTF-8"); // FIXME ???
-        setlocale(LC_CTYPE, $this->container->get('misc.locale'));
-        date_default_timezone_set($this->container->get('misc.timeZone'));
+        ini_set('memory_limit', $container->get('misc.memoryLimit'));
+        ini_set(LC_ALL, $container->get('misc.locale'));
+        setlocale(LC_TIME, $container->get('misc.locale') . ".UTF-8"); // FIXME ???
+        setlocale(LC_CTYPE, $container->get('misc.locale'));
+        date_default_timezone_set($container->get('misc.timeZone'));
+    }
+
+    /**
+     * TODO delete tmp before deploying
+     * Be aware that the container is compiled once and never updated!
+     *
+     * Therefore:
+     *
+     * - in production you should clear that directory every time you deploy
+     * - in development you should not compile the container
+     *
+     * @throws ErrorException
+     */
+    protected function enableCompilation(ContainerBuilder $builder, array $config): void
+    {
+        if($config['site.debugMode']) {
+            return;
+        }
+        $tmpPath = $this->rootPath . $config['pathes.tmp'];
+
+        if(!is_dir($tmpPath) && !mkdir($tmpPath)) {
+            throw new ErrorException();
+        }
+        $builder->enableCompilation($tmpPath);
+        $builder->writeProxiesToFile(true, "$tmpPath/proxies");
     }
 
     /**
      * @throws ContainerException
      * @throws \Exception
      */
-    protected function getContainer(string $configFile): Container {
+    protected function getContainer(string $configFile): Container
+    {
         $builder = new ContainerBuilder();
-        $builder->addDefinitions((new Config(Yaml::parseFile($configFile)))->getAsArray());
+        $config = (new Config(Yaml::parseFile($configFile)))->getAsArray();
+
+        $this->enableCompilation($builder, $config);
+
+        $builder->addDefinitions($config);
         $builder->addDefinitions([
             'session.servername' => $this->server['SERVER_NAME'],
 
@@ -204,15 +235,9 @@ class Bootstrap {
     }
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws DependencyException
      * @throws ErrorException
      */
     public function errorHandler($errno, $errstr, $errfile, $errline): bool {
-        if(!$this->container->get('site.debugMode')) {
-            return true;
-        }
-
         if(!(error_reporting() & $errno)) {
             return false;
         }
