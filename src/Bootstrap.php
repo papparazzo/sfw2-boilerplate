@@ -43,10 +43,10 @@ use SFW2\Config\Exceptions\ContainerException;
 use SFW2\Core\Utils\DateTimeHelper;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Database\Exception;
-use SFW2\Menu\Middleware\MenuMiddleware; // FIXME: use namespace from config.yaml
+use SFW2\Menu\Middleware\MenuMiddleware;     // FIXME: use namespace from config.yaml
 use SFW2\Routing\Dispatcher;
-use SFW2\Routing\Middleware\Error;       // FIXME: use namespace from config.yaml
-use SFW2\Routing\Middleware\Offline;     // FIXME: use namespace from config.yaml
+use SFW2\Routing\Middleware\Error;           // FIXME: use namespace from config.yaml
+use SFW2\Routing\Middleware\Offline;         // FIXME: use namespace from config.yaml
 use SFW2\Routing\Render\RenderComposite;
 use SFW2\Routing\Render\RenderHtml;
 use SFW2\Routing\Render\RenderJson;
