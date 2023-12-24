@@ -222,10 +222,8 @@ class Bootstrap {
 
         $builder->addDefinitions($config);
         $builder->addDefinitions([
-            'session.servername' => $this->server['SERVER_NAME'],
-
-            SessionInterface::class => function (ContainerInterface $ci) {
-                return new Session($ci->get('session.servername'));
+            SessionInterface::class => function () {
+                return new Session();
             },
             DatabaseInterface::class => function (ContainerInterface $ci) {
                 return new Database(
@@ -241,6 +239,18 @@ class Bootstrap {
                     $ci->get('misc.timeZone'),
                     $ci->get('misc.locale')
                 );
+            },
+            PathMapInterface::class => function (DatabaseInterface $database) {
+                return new PathMapByDatabase($database);
+            },
+            CacheInterface::class => function (SessionInterface $session) {
+                return new SessionSimpleCache($session);
+            },
+            LoggerInterface::class => function () {
+                return new NullLogger();
+            },
+            PermissionInterface::class => function(DatabaseInterface $database) {
+                return new Permission($database);
             }
         ]);
         return $builder->build();
