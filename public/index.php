@@ -22,6 +22,11 @@
 
 use SFW2\Boilerplate\Bootstrap;
 
-require __DIR__ . '/../vendor/autoload.php';
-$boot = new Bootstrap($_SERVER, $_GET, $_POST, '../config/config.yaml');
-$boot->run();
+$root = dirname(__DIR__);
+
+require "$root/vendor/autoload.php";
+
+/**
+ * @noinspection PhpUnhandledExceptionInspection
+ */
+(new Bootstrap($root))->run('config.yaml');

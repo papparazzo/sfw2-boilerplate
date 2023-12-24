@@ -34,19 +34,20 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use SFW2\Authority\Middleware\Authorisation; // FIXME: use namespace from config.yaml
-use SFW2\Authority\Permission\Permission;
-use SFW2\Authority\Permission\PermissionException;
+use Psr\SimpleCache\CacheInterface;
+use SFW2\Authority\Permission\Permission;           // TODO: Remove dependency
+use SFW2\Authority\Permission\PermissionInterface;  // TODO: Remove dependency
 use SFW2\Config\Config;
 use SFW2\Config\Exceptions\ContainerException;
 use SFW2\Core\Utils\DateTimeHelper;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Database\Exception;
-use SFW2\Menu\Middleware\MenuMiddleware;     // FIXME: use namespace from config.yaml
 use SFW2\Routing\Dispatcher;
-use SFW2\Routing\Middleware\Error;           // FIXME: use namespace from config.yaml
-use SFW2\Routing\Middleware\Offline;         // FIXME: use namespace from config.yaml
+use SFW2\Routing\Middleware\Error;
+use SFW2\Routing\Middleware\Offline;
+use SFW2\Routing\PathMap\PathMapInterface;
 use SFW2\Routing\Render\RenderComposite;
 use SFW2\Routing\Render\RenderHtml;
 use SFW2\Routing\Render\RenderJson;
@@ -54,6 +55,7 @@ use SFW2\Routing\Render\RenderXml;
 use SFW2\Routing\ResponseEngine;
 use SFW2\Routing\Runner;
 use SFW2\Routing\TemplateLoader;
+use SFW2\Session\Middleware\XSRFTokenHandler;
 use SFW2\Session\Session;
 use SFW2\Database\Database;
 
@@ -62,37 +64,14 @@ use SFW2\Routing\Router;
 use ErrorException;
 use SFW2\Session\SessionInterface;
 use SFW2\Session\SessionSimpleCache;
+use SFW2\Session\XSRFToken;
 use Symfony\Component\Yaml\Yaml;
 
 class Bootstrap {
 
     protected Container $container;
 
-    protected string $rootPath;
-
-    protected array $server;
-
-    protected array $get;
-
-    protected array $post;
-
-    /**
-     * @param array $server
-     * @param array $get
-     * @param array $post
-     * @param string $configFile
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerException
-     */
-    public function __construct(array $server, array $get, array $post, string $configFile) {
-        $this->rootPath  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-        $this->server    = $server;
-        $this->get       = $get;
-        $this->post      = $post;
-        $this->container = $this->getContainer($configFile);
-
-        $this->setUpEnvironment($this->container);
+    public function __construct(protected string $rootPath) {
     }
 
     /**
@@ -100,23 +79,28 @@ class Bootstrap {
      * @throws Exception
      * @throws NotFoundException
      * @throws InvalidArgumentException
-     * @throws PermissionException
+     * @throws ContainerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     #[NoReturn]
-    public function run(): void {
+    public function run(string $configFile): void
+    {
+        $configFile = $this->rootPath . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . $configFile;
+        $container = $this->getContainer($configFile);
+        $this->setUpEnvironment($container);
+
         /** @var Database $database */
-        $database = $this->container->get(DatabaseInterface::class);
+        $database = $container->get(DatabaseInterface::class);
 
         /** @var Session $session */
-        $session = $this->container->get(SessionInterface::class);
-
-        $logger = new NullLogger(); // FIXME Replace this
+        $session = $container->get(SessionInterface::class);
 
         $controllerMap = new ControllerMapByDatabase($database);
         $pathMap = new PathMapByDatabase($database);
         $psr17Factory = new Psr17Factory();
 
-        $templateLoader = new TemplateLoader($this->container->get('pathes.templates'), 'SFW2\Boilerplate');
+        $templateLoader = new TemplateLoader($container->get('pathes.templates'), 'SFW2\Boilerplate');
         $render = new RenderComposite();
         $render->addEngines(
             new RenderJson(),
@@ -126,12 +110,11 @@ class Bootstrap {
 
         $responseEngine = new ResponseEngine($render, $psr17Factory);
 
-        $router = new Router(new Runner($controllerMap, $this->container, $responseEngine), $pathMap);
-        // TODO: get middlewares from config and iterate!
-        $router->addMiddleware(new Offline(new SessionSimpleCache($session), $this->container));
-        $router->addMiddleware(new MenuMiddleware($database, $pathMap));
-        $router->addMiddleware(new Authorisation(new Permission($database), $session, $database));
-        $router->addMiddleware(new Error($responseEngine, $this->container, $logger));
+        $router = new Router(new Runner($controllerMap, $container, $responseEngine), $pathMap);
+        $router->addMiddleware(new Offline($container->get(CacheInterface::class), $container));
+        $router->addMiddleware(new XSRFTokenHandler(new XSRFToken(new SessionSimpleCache($session))));
+        $this->loadMiddleware($container, $router);
+        $router->addMiddleware(new Error($responseEngine, $container, $container->get(LoggerInterface::class)));
 
         $creator = new ServerRequestCreator(
             $psr17Factory, // ServerRequestFactory
@@ -141,7 +124,7 @@ class Bootstrap {
         );
 
         $request = $creator->fromGlobals();
-        $request = $request->withAttribute('sfw2_project', $this->container->get('project'));
+        $request = $request->withAttribute('sfw2_project', $container->get('project'));
 
         $response = $router->handle($request);
 
