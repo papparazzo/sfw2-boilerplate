@@ -16,20 +16,44 @@
     },
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/papparazzo/sfw2-validator.git"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/papparazzo/sfw2-core.git"
-        },
-        {
+            "type": "path",
+            "url": "../sfw2-config",
+            "symlink": true
+        }, {
+            "type": "path",
+            "url": "../sfw2-menu",
+            "symlink": true
+        }, {
+            "type": "path",
+            "url": "../sfw2-gallery",
+            "symlink": true
+        }, {
+            "type": "path",
+            "url": "../sfw2-guestbook",
+            "symlink": true
+        }, {
+            "type": "path",
+            "url": "../sfw2-authority",
+            "symlink": true
+        }, {
+            "type": "path",
+            "url": "../sfw2-appointments",
+            "symlink": true
+        }, {
             "type": "vcs",
             "url": "https://github.com/papparazzo/sfw2-routing.git"
-        },
-        {
+        }, {
             "type": "vcs",
             "url": "https://github.com/papparazzo/sfw2-database.git"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-validator.git"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-core.git"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-session.git"
         }
     ],
     "require": {
@@ -40,12 +64,27 @@
         "ext-intl": "*",
         "ext-mysqli": "*",
 
-        "level-2/dice": "^3.0",
+        "sfw2/config": "@dev",
+        "sfw2/core": "^3.0",
+        "sfw2/database": "^2.0",
+        "sfw2/gallery": "@dev",
+        "sfw2/guestbook": "@dev",
+        "sfw2/menu": "@dev",
+        "sfw2/routing": "^5.0",
+        "sfw2/session": "^4.0",
+        "sfw2/validator": "^6.0",
+        "sfw2/authority": "@dev",
+        "sfw2/appointments": "@dev",
 
-        "sfw2/validator": "^3.0",
-        "sfw2/routing": "^3.0",
-        "sfw2/database": "^1.0",
-        "symfony/yaml": "^5.1"
+        "symfony/yaml": "^5.1",
+        "php-di/php-di": "^7.0.5",
+
+        "nyholm/psr7": "^1.8.0",
+        "nyholm/psr7-server": "^1.0.2"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "composer/composer": "^2.0"
     },
     "scripts": {
         "post-create-project-cmd": [
