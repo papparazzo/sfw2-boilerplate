@@ -150,6 +150,18 @@ class Bootstrap {
     }
 
     /**
+     * @throws NotFoundException
+     * @throws DependencyException
+     */
+    protected function loadMiddleware(Container $container, Router $router): void
+    {
+        $w = $container->get('pathes.middleware');
+        foreach($w as $class => $i) {
+            $router->addMiddleware($container->get($class));
+        }
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
