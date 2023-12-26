@@ -25,9 +25,12 @@ function loadContent(that) {
             "X-Requested-With": "XMLHttpRequest",
             "accept":           "application/xml"
         }
-    }).done(function(data) {
+    }).done(function(data, textStatus, request) {
+        $('#sfw2-xsrf-token').val(request.getResponseHeader('x-csrf-token'));
         that.html($.parseHTML(data));
-    }).fail(function(){
+    }).fail(function(request){
+        // FIXME: Ist hier wahrscheinlich immer null da Session-Middleware nicht richtig aufgerufen wird!
+        $('#sfw2-xsrf-token').val(request.getResponseHeader('x-csrf-token'));
         printError(that);
     });
 }
@@ -125,7 +128,6 @@ $(document).on('click', '.sfw2-button-send', function(e){
     }
 
     formData = form.serializeArray();
-    formData.push({name : 'xss', value : $('#sfw2_xss_token').val()});
 
     /*
     let f = $("#createForm input:file");
@@ -155,11 +157,13 @@ $(document).on('click', '.sfw2-button-send', function(e){
         url:  that.data('sfw2-url') + '?do=' + (itemId > 0 ? 'update' : 'create'),
         data: formData,
         headers : {
+            "X-CSRF-Token": $('#sfw2-xsrf-token').val(),
             "X-Requested-With": "XMLHttpRequest",
             "accept":           "application/json"
         },
-        success: function(response) {
-            $('#sfw2_xss_token').val(response.xss);
+        success: function(response, textStatus, jqXHR) {
+            $('#sfw2-xsrf-token').val(jqXHR.getResponseHeader('x-csrf-token'));
+
             let entries = response.data;
 
             for(let key in entries) {
@@ -207,8 +211,12 @@ $(document).on('click', '.sfw2-button-send', function(e){
             location.reload();
         },
         error: function(response) {
-            if(response.status !== 422) {
-                if(bootstrap.Modal.getInstance('#sfw2-form-dialog-modal')){
+            $('#sfw2-xsrf-token').val(response.getResponseHeader('x-csrf-token'));
+
+            let entries = response.responseJSON.sfw2_payload;
+
+            if(response.status !== 422 || !entries) {
+                if(bootstrap.Modal.getInstance('#sfw2-form-dialog-modal')) {
                     bootstrap.Modal.getInstance('#sfw2-form-dialog-modal').hide();
                 }
                 showErrorDialog(response.responseJSON);
@@ -320,25 +328,28 @@ $('#sfw2-delete-accept-button').click(function() {
         type: "POST",
         url:  url + '?do=delete',
         headers : {
+            "X-CSRF-Token":     $('#sfw2-xsrf-token').val(),
             "X-Requested-With": "XMLHttpRequest",
             "accept":           "application/json"
         },
         data: {
-            id: itemId,
-            xss: $('#sfw2_xss_token').val()
+            id: itemId
         },
         success: function(response) {
+            $('#sfw2-xsrf-token').val(response.getResponseHeader('x-csrf-token'));
+
             let id = itemId.toString().replace(".", "_");
 
             if(response.reload) {
                 window.location.reload();
                 return;
             }
-            //$('#sfw2_xss_token').val(response.xss);
+
             bootstrap.Modal.getInstance('#sfw2-delete-dialog-modal').hide();
             $('#' + formId + '_recordset_' + id).fadeOut(1250, function() {$(this).remove();});
         },
         error: function(response) {
+            $('#sfw2-xsrf-token').val(response.getResponseHeader('x-csrf-token'));
             bootstrap.Modal.getInstance('#sfw2-delete-dialog-modal').hide();
             showErrorDialog(response.responseJSON);
         }
