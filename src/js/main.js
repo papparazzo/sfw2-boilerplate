@@ -55,12 +55,11 @@ document.getElementById('sfw2-form-dialog-modal').addEventListener('show.bs.moda
     let itemId = button.data('sfw2-item-id');
     let formId = button.data('sfw2-form-id');
 
-    // FIXME: id ist dann doppelt vergeben!
-    $('#dialogBody').html($('#' + formId).html());
+    $('#sfw2-form-dialog-body').html($(formId).html());
 
     if(itemId) {
         /* TODO: Revisit
-        $('#dialogTitle').html('Eintrag bearbeiten...');
+        $('#sfw2-form-dialog-title').html('Eintrag bearbeiten...');
         $('#createForm').each(function() {
             $(this).find(':input').each(function() {
                 let name = '';
@@ -82,8 +81,19 @@ document.getElementById('sfw2-form-dialog-modal').addEventListener('show.bs.moda
         });
         */
     } else {
-        $('#dialogTitle').html('Neuen Eintrag erstellen...');
+        $('#sfw2-form-dialog-title').html('Neuen Eintrag erstellen...');
     }
+    let sendButton = $('#sfw2-dialog-button-send');
+
+    let formTitle = button.data('sfw2-form-title');
+    if(formTitle !== '') {
+        $('#sfw2-form-dialog-title').html(formTitle);
+    }
+    let buttonCaption = button.data('sfw2-form-button-caption');
+    if(buttonCaption !== '') {
+        sendButton.html(formTitle);
+    }
+
 /* TODO Revisit
     $('#createForm').find('textarea').each(function() {
         if($(this).attr('id')) {
@@ -106,9 +116,7 @@ document.getElementById('sfw2-form-dialog-modal').addEventListener('show.bs.moda
         that = button;
     }
 */
-    let sendButton = $('#sfw2-dialog-button-send');
 
- //   sendButton.data('target', that.next());
     sendButton.data('sfw2-item-id', itemId ? itemId : 0);
     sendButton.data('sfw2-form-id', formId);
     sendButton.data('sfw2-url', button.data('sfw2-url'));
@@ -122,9 +130,9 @@ $(document).on('click', '.sfw2-button-send', function(e){
     let form;
 
     if(that.data('sfw2-inline')) {
-        form = $('#' + that.data('sfw2-form-id'));
+        form = $(that.data('sfw2-form-id'));
     } else {
-        form = $('#dialogBody form');
+        form = $('#sfw2-form-dialog-body form');
     }
 
     formData = form.serializeArray();
