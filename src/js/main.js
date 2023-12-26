@@ -274,14 +274,15 @@ function showErrorDialog(response) {
     myModal.show();
 }
 
-window.onerror = function(err) {
+window.onerror = function(message, source, lineno, error) {
     let response = {
         title: '500',
         caption: 'Interner Fehler aufgetreten!',
-        description: 'Es ist ein unbekannter Fehler aufgetreten. ' +
+        description:
+            'Es ist ein unbekannter Fehler aufgetreten. ' +
             'Bitte prüfe die URL auf Fehler und drücke dann\n' +
             'den reload-Button in deinem Browser.',
-        identifier: err
+        identifier: message
     };
     showErrorDialog(response);
     //TODO Consider to send report via ajax
