@@ -123,16 +123,94 @@
                         </ul>
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link" style="cursor: pointer">
+                                <div id="sfw2-frogot-password-form" class="d-none">
+                                    <form>
+                                        <div class="row">
+                                            <div class="col mb-3">
+                                                Du hast Dein Passwort verbaselt? Hier hast Du die Möglichkeit, es wieder rückzusetzen.
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label for="sfw2-login-forgot-input-user" class="col-sm-4 col-form-label">Benutzername</label>
+                                            <div class="col-sm-7">
+                                                <input
+                                                    id="sfw2-login-forgot-input-user"
+                                                    type="text"
+                                                    class="form-control form-control-sm"
+                                                    name="user"
+                                                    value=""
+                                                />
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id="sfw2-login-form" class="d-none">
+                                    <form>
+                                        <div class="row">
+                                            <label for="sfw2-login-input-user" class="col-sm-4 col-form-label text-body-secondary">Benutzername</label>
+                                            <div class="col-sm-7">
+                                                <input
+                                                    id="sfw2-login-input-user"
+                                                    type="text"
+                                                    class="form-control form-control-sm"
+                                                    name="usr"
+                                                    value=""
+                                                />
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label for="sfw2-login-input-password" class="col-sm-4 col-form-label text-body-secondary">Passwort</label>
+                                            <div class="col-sm-7">
+                                                <input
+                                                    id="sfw2-login-input-password"
+                                                    type="password"
+                                                    class="form-control form-control-sm"
+                                                    name="pwd"
+                                                    value=""
+                                                />
+                                                <div class="invalid-feedback">Die Anmeldung schlug fehl!</div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-sm-7">
+                                                <a
+                                                    id="sfw2-forget-pwd-link"
+                                                    class="sfw2-clickable text-body-secondary"
+                                                    title="Du hast Dein Passwort verbaselt? Hier hast Du die Möglichkeit, es wieder rückzusetzen."
+                                                    data-sfw2-form-id="#sfw2-frogot-password-form"
+                                                    data-sfw2-form-title="Passwort rücksetzen"
+                                                    data-sfw2-form-button-caption="okay"
+                                                    data-sfw2-url="/authentication/reset" {{!TODO: No Hardcoded path!}}
+                                                >
+                                                    Passwort vergessen?
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-4"></div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id="sfw2-logout-form" class="d-none">
+                                    Du bist zur Zeit als <strong>{{sfw2_authority.user_name}}</strong> angemeldet. Möchtest du dich abmelden?
+                                </div>
+                                <a class="nav-link sfw2-clickable">
                                     <i
                                         class="bi {{#if sfw2_authority.authenticated}}bi-person-check{{else}}bi-person-lock{{/if}}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#sfw2-form-dialog-modal"
                                         {{#if sfw2_authority.authenticated}}
                                         title="Angemeldet als '{{sfw2_authority.user_name}}'"
-                                        id="sfw2-logout-button"
+                                        data-sfw2-form-id="#sfw2-logout-form"
+                                        data-sfw2-form-title="Abmelden"
+                                        data-sfw2-form-button-caption="abmelden"
+                                        data-sfw2-url="/authentication?do=logoff" {{!TODO: No Hardcoded path!}}
                                         {{else}}
                                         title="hier klicken um sich anzumelden..."
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#sfw2-login-dialog-modal"
+                                        data-sfw2-form-id="#sfw2-login-form"
+                                        data-sfw2-form-title="Login"
+                                        data-sfw2-form-button-caption="anmelden"
+                                        data-sfw2-url="/authentication" {{!TODO: No Hardcoded path!}}
                                         {{/if}}
                                     ></i>
                                 </a>

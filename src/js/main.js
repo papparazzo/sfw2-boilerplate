@@ -345,3 +345,21 @@ $('#sfw2-delete-accept-button').click(function() {
     });
 });
 
+// FIXME Das hier auslagern nach sfw2_authroity.js
+$(document).on('click', '#sfw2-forget-pwd-link', function(e){
+    let button = $(this);
+    let formId = button.data('sfw2-form-id');
+    $('#sfw2-form-dialog-body').html($(formId).html());
+    $('#sfw2-form-dialog-title').html(button.data('sfw2-form-title'));
+
+    let sendButton = $('#sfw2-dialog-button-send');
+    sendButton.html(button.data('sfw2-form-button-caption'));
+
+    sendButton.data('sfw2-item-id', 0);
+    sendButton.data('sfw2-form-id', formId);
+    sendButton.data('sfw2-url', button.data('sfw2-url'));
+    sendButton.data('sfw2-inline', false);
+});
+
+
+
