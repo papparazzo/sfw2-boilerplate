@@ -258,17 +258,31 @@ $(document).on('click', '.sfw2-button-send', function(e){
     });
 });
 
-//sfw2-login-logout-button
-
-function showErrorDialog(response) {
+function showErrorDialog(response, reload = false) {
     const found = response.identifier.match(/^[A-F0-9]{32}$/g);
     if (found) {
         response.identifier = `ID: ${response.identifier}`;
     }
-    $('#sfw2-common-dialog-identifier').html(`[${response.identifier}]`);
-    $('#sfw2-common-dialog-title').html(`[${response.title}] ${response.caption}`);
-    $('#sfw2-common-dialog-body').html(response.description);
-    //$('#sfw2_xss_token').val(response.xss); FIXME: add xssToken
+    response.identifier = `[${response.identifier}]`;
+    response.title = `[${response.title}] ${response.caption}`;
+    if(reload) {
+        showDialog(response, function() {window.location.reload();});
+    } else {
+        showDialog(response);
+    }
+}
+
+function showDialog(data, action) {
+    if(data.identifier) {
+        $('#sfw2-common-dialog-identifier').html(data.identifier);
+    } else {
+        $('#sfw2-common-dialog-identifier').html("");
+    }
+    $('#sfw2-common-dialog-title').html(data.title);
+    $('#sfw2-common-dialog-body').html(data.description);
+    $('#sfw2-xsrf-token').val(data.sfw2_xsrf_token);
+
+    $('#sfw2-common-dialog-button-okay').click(action);
 
     const myModal = new bootstrap.Modal('#sfw2-common-dialog-modal', {});
     myModal.show();
@@ -284,7 +298,10 @@ window.onerror = function(message, source, lineno, error) {
             'den reload-Button in deinem Browser.',
         identifier: message
     };
-    showErrorDialog(response);
+    showErrorDialog(response, true);
+    console.log(source);
+    console.log(lineno);
+    console.log(error);
     //TODO Consider to send report via ajax
     return true;
 };
