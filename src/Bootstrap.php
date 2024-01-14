@@ -100,12 +100,14 @@ class Bootstrap {
         $pathMap = new PathMapByDatabase($database);
         $psr17Factory = new Psr17Factory();
 
-        $templateLoader = new TemplateLoader($container->get('pathes.templates'), 'SFW2\Boilerplate');
+        $hfactory = $container->get(HandlebarsFactory::class);
+        $handlebars = $hfactory->getHandlebars(LoaderType::TEMPLATE_LOADER);
+
         $render = new RenderComposite();
         $render->addEngines(
             new RenderJson(),
-            new RenderXml($templateLoader),
-            new RenderHtml($templateLoader, 'skeleton')
+            new RenderXml($handlebars),
+            new RenderHtml($handlebars, 'skeleton')
         );
 
         $responseEngine = new ResponseEngine($render, $psr17Factory);
