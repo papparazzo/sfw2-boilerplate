@@ -185,7 +185,7 @@ class Bootstrap {
         if($config['site.debugMode']) {
             return;
         }
-        $tmpPath = $this->rootPath . $config['pathes.tmp'];
+        $tmpPath = $this->rootPath . DIRECTORY_SEPARATOR . $config['pathes.tmp'];
 
         if(!is_dir($tmpPath) && !mkdir($tmpPath)) {
             throw new ErrorException();
