@@ -54,7 +54,6 @@ use SFW2\Routing\Render\RenderJson;
 use SFW2\Routing\Render\RenderXml;
 use SFW2\Routing\ResponseEngine;
 use SFW2\Routing\Runner;
-use SFW2\Routing\TemplateLoader;
 use SFW2\Session\Middleware\XSRFTokenHandler;
 use SFW2\Session\Session;
 use SFW2\Database\Database;
