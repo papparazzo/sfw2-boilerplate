@@ -234,8 +234,9 @@ class Bootstrap {
             LoggerInterface::class => function () {
                 return new NullLogger();
             },
-            PermissionInterface::class => function(DatabaseInterface $database) {
-                return new Permission($database);
+            PermissionInterface::class => function(SessionInterface $session, DatabaseInterface $database) {
+                return new Permission($session, $database);
+            },
             }
         ]);
         return $builder->build();
