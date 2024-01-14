@@ -237,6 +237,18 @@ class Bootstrap {
             PermissionInterface::class => function(SessionInterface $session, DatabaseInterface $database) {
                 return new Permission($session, $database);
             },
+            Mailer::class => function(ContainerInterface $ci) {
+                /** @var HandlebarsFactory $handlebars */
+                $handlebars = $ci->get(HandlebarsFactory::class);
+                return new Mailer(
+                    $ci->get('project.default_sender_address'),
+                    [$ci->get('project.webmaster_mail_address')],
+                    $handlebars->getHandlebars(LoaderType::TEMPLATE_LOADER),
+                    $handlebars->getHandlebars(LoaderType::STRING_LOADER)
+                );
+            },
+            HandlebarsFactory::class => function(ContainerInterface $ci) {
+                return new HandlebarsFactory($ci->get('pathes.templates'), 'SFW2\Boilerplate');
             }
         ]);
         return $builder->build();
