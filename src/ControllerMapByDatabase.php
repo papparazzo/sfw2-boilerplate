@@ -61,9 +61,6 @@ class ControllerMapByDatabase implements ControllerMapInterface {
             flags:  JSON_THROW_ON_ERROR
         );
 
-        return new ControllerData(
-            $res['ClassName'],
-             new Container($data)
-        );
+        return new ControllerData($res['ClassName'], $data);
     }
 }
