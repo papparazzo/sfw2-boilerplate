@@ -90,7 +90,7 @@
         "post-create-project-cmd": [
             "SFW2\\Install\\ComposerScript::postCreateProject"
         ],
-        "start": "php -S localhost:8080 -t public",
-        "debug": "php -dxdebug.client_port=9000 -dxdebug.client_host=127.0.0.1 -dxdebug.start_with_request=yes -dxdebug.mode=debug -S localhost:8080 -t public"
+        "start": ["Composer\\Config::disableProcessTimeout", "php -S localhost:8080 -t public"],
+        "debug": ["Composer\\Config::disableProcessTimeout", "php -dxdebug.client_port=9000 -dxdebug.client_host=127.0.0.1 -dxdebug.start_with_request=yes -dxdebug.mode=debug -S localhost:8080 -t public"]
     }
 }
