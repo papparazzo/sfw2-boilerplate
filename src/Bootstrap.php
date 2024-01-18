@@ -37,11 +37,14 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
-use SFW2\Authority\Permission\Permission;           // TODO: Remove dependency
-use SFW2\Authority\Permission\PermissionInterface;  // TODO: Remove dependency
+use SFW2\Authority\Permission\Permission;
 use SFW2\Config\Config;
 use SFW2\Config\Exceptions\ContainerException;
+use SFW2\Core\Handlebars\HandlebarsFactory;
+use SFW2\Core\Handlebars\LoaderType;
+use SFW2\Core\Permission\PermissionInterface;
 use SFW2\Core\Utils\DateTimeHelper;
+use SFW2\Core\Utils\Mailer;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Database\Exception;
 use SFW2\Routing\Dispatcher;
@@ -113,8 +116,8 @@ class Bootstrap {
 
         $router = new Router(new Runner($controllerMap, $container, $responseEngine), $pathMap);
         $router->addMiddleware(new Offline($container->get(CacheInterface::class), $container));
-        $router->addMiddleware(new XSRFTokenHandler(new XSRFToken(new SessionSimpleCache($session))));
         $this->loadMiddleware($container, $router);
+        $router->addMiddleware(new XSRFTokenHandler(new XSRFToken(new SessionSimpleCache($session))));
         $router->addMiddleware(new Error($responseEngine, $container, $container->get(LoggerInterface::class)));
 
         $creator = new ServerRequestCreator(
@@ -129,8 +132,8 @@ class Bootstrap {
 
         $response = $router->handle($request);
 
-        $x = new Dispatcher();
-        $x->dispatch($response);
+        $dispatcher = new Dispatcher();
+        $dispatcher->dispatch($response);
     }
 
     /**
