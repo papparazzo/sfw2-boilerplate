@@ -29,18 +29,21 @@ use Exception;
 use mysqli;
 use Locale;
 
-class Installer {
+class Installer
+{
 
     protected IOInterface $ioInterface;
 
-    public function __construct(IOInterface $ioInterface) {
+    public function __construct(IOInterface $ioInterface)
+    {
         $this->ioInterface = $ioInterface;
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function install(): void {
+    public function install(): void
+    {
         $this->ioInterface->write('This will set up a new web page project');
         $config = $this->getConfigArray();
         file_put_contents('config/config.yaml', Yaml::dump($config));
@@ -48,16 +51,17 @@ class Installer {
         $this->cleaningUp('install');
     }
 
-    protected function getConfigArray(): array {
+    protected function getConfigArray(): array
+    {
         $host = $this->ioInterface->ask('installation host (domain)? ');
         // TODO: Validate input!
         return [
             'database' => [
-                'dsn'    => $this->ioInterface->ask('database dsn?'),
-                'user'   => $this->ioInterface->ask('database user? '),
-                'pwd'    => $this->ioInterface->ask('database pwd? '),
-                'prefix' => $this->ioInterface->ask('database prefix? ')
+                'dsn'     => "mysql:dbname=$dbName;host=$dbHost",
+                'user'    => $this->ioInterface->ask('database user? '),
+                'pwd'     => $this->ioInterface->ask('database pwd? '),
                 'options' => [],
+                'prefix'  => $this->ioInterface->ask('database prefix? ')
             ],
             'site' => [
                 'offline'            => true,
@@ -87,12 +91,13 @@ class Installer {
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function setUpDatabase(array $dbConfig): void {
+    protected function setUpDatabase(array $dbConfig): void
+    {
         $handle = new mysqli("p:{$dbConfig['host']}", $dbConfig['user'], $dbConfig['pwd']);
         $err = mysqli_connect_error();
-        if($err) {
+        if ($err) {
             throw new Exception("Could not connect to database <$err>");
         }
         $handle->query("set names 'utf8';");
@@ -100,12 +105,13 @@ class Installer {
         $stmt = str_replace('{DATABASE_NAME}', $dbConfig['db'], file_get_contents(__DIR__ . '/database.sql'));
         $stmt = str_replace('{TABLE_PREFIX}', $dbConfig['prefix'], $stmt);
 
-        if($handle->multi_query($stmt) === false) {
+        if ($handle->multi_query($stmt) === false) {
             throw new Exception('Could not create database');
         }
     }
 
-    protected function cleaningUp(string $path): void {
+    protected function cleaningUp(string $path): void
+    {
         array_map('unlink', glob("$path/*"));
         rmdir($path);
     }
