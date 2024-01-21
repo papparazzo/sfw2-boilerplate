@@ -57,6 +57,7 @@ class Installer {
                 'user'   => $this->ioInterface->ask('database user? '),
                 'pwd'    => $this->ioInterface->ask('database pwd? '),
                 'prefix' => $this->ioInterface->ask('database prefix? ')
+                'options' => [],
             ],
             'site' => [
                 'offline'            => true,
