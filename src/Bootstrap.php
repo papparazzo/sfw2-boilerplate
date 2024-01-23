@@ -250,7 +250,7 @@ class Bootstrap {
                 );
             },
             HandlebarsFactory::class => function(ContainerInterface $ci) {
-                return new HandlebarsFactory($ci->get('pathes.templates'), 'SFW2\Boilerplate');
+                return new HandlebarsFactory($ci->get('pathes.templates'), 'SFW2\Base');
             }
         ]);
         return $builder->build();
