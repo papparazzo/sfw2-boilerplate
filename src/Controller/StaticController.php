@@ -35,7 +35,7 @@ final class StaticController extends AbstractController
 
     public function index(Request $request, ResponseEngine $responseEngine): Response
     {
-        return $responseEngine->render(request: $request, template: "SFW2\\Boilerplate\\$this->template");
+        return $responseEngine->render(request: $request, template: "SFW2\\Base\\$this->template");
     }
 }
 
