@@ -55,7 +55,7 @@ class Installer
     {
         $host = $this->ioInterface->ask('installation host (domain)? ');
         // TODO: Validate input!
-        return [
+        $config = [
             'database' => [
                 'dsn'     => "mysql:dbname=$dbName;host=$dbHost",
                 'user'    => $this->ioInterface->ask('database user? '),
@@ -84,9 +84,18 @@ class Installer
                 'log'        => 'weblog/',
                 'data'       => 'data/',
                 'templates'  => [
-                    "SFW2\\Menu"         => "/var/www/sfw2-menu/templates/",
-                ]
+                    "SFW2\\Base" => "../templates/",
+                ],
+                'middleware' => []
             ]
+        ];
+        file_put_contents('config/config.yaml', Yaml::dump($config));
+        return [
+            'host' => $dbHost,
+            'user' => $config['database']['user'],
+            'pwd' => $config['database']['pwd'],
+            'db' => $dbName,
+            'prefix' => $config['database']['prefix']
         ];
     }
 
