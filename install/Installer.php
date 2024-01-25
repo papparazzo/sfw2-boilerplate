@@ -46,14 +46,18 @@ class Installer
     {
         $this->ioInterface->write('This will set up a new web page project');
         $config = $this->getConfigArray();
-        file_put_contents('config/config.yaml', Yaml::dump($config));
-        $this->setUpDatabase($config['database']);
+        $this->setUpDatabase($config);
+        // TODO: run npm install!
+
         $this->cleaningUp('install');
     }
 
     protected function getConfigArray(): array
     {
         $host = $this->ioInterface->ask('installation host (domain)? ');
+        $dbHost = $this->ioInterface->ask("database host? [$host] ", $host);
+        $dbName = $this->ioInterface->ask("database name?");
+
         // TODO: Validate input!
         $config = [
             'database' => [
