@@ -166,7 +166,7 @@ class Bootstrap {
         mb_internal_encoding('UTF-8');
         ini_set('memory_limit', $container->get('misc.memoryLimit'));
         ini_set(LC_ALL, $container->get('misc.locale'));
-        setlocale(LC_TIME, $container->get('misc.locale') . ".UTF-8"); // FIXME ???
+        setlocale(LC_TIME, $container->get('misc.locale') . ".UTF-8");
         setlocale(LC_CTYPE, $container->get('misc.locale'));
         date_default_timezone_set($container->get('misc.timeZone'));
     }
