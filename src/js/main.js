@@ -35,7 +35,7 @@ function loadForm(url) {
 }
 
 $('.sfw2-reload-content').each(function() {
-    sfw2LoadContent($(this));
+    sfw2LoadContent($(this), $(this).data('sfw2-url'));
 });
 
 function sfw2Reload() {
@@ -58,11 +58,11 @@ $(document).on('click', 'input:checkbox', function(){
     $(this).removeClass('is-invalid');
 });
 
-function sfw2LoadContent(that) {
+function sfw2LoadContent(that, url) {
     that.append('<div class="text-center"><div class="sfw2-ajax-loader" /></div>');
 
     $.ajax({
-        url: that.data('sfw2-url'),
+        url: url,
         dataType: "html",
         headers : {
             "Content-Type":     "application/json",
