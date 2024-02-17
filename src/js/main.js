@@ -10,6 +10,30 @@ import * as bootstrap from 'bootstrap'
 
 import $ from "jquery";
 
+$(document).on('click', '.sfw2-load-form', function() {
+    let url = $(this).data('sfw2-url');
+    if(url.split('?').length === 1) {
+        url += '?getForm'
+    } else {
+        url += '&getForm'
+    }
+    loadForm(url);
+});
+
+$(function(){
+    const urlParams = new URLSearchParams(window.location.search);
+    if(!urlParams.has('getForm')) {
+        return;
+    }
+    loadForm(`${urlParams.get('getForm')}${window.location.search}`);
+});
+
+function loadForm(url) {
+    sfw2LoadContent($('#sfw2-form'), url);
+    const myModal = new bootstrap.Modal('#sfw2-form-dialog-modal', {});
+    myModal.show();
+}
+
 $('.sfw2-reload-content').each(function() {
     sfw2LoadContent($(this));
 });
