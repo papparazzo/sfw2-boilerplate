@@ -15,13 +15,11 @@ $('.sfw2-reload-content').each(function() {
 });
 
 function sfw2Reload() {
-    // FIXME: Hier gibt es probleme mit dem drehen von Bildern (do=showGallery wird entfernt)
-    //let url = window.location.href.split('?');
-   // if(url.length === 1) {
-        window.location.reload();
-    //}else{
-   //     window.location.href = url[0];
-    //}
+    const url = new URL(window.location)
+    url.searchParams.delete('getForm');
+    url.searchParams.delete('hash');
+    window.location.href = url.toString();
+    window.location.reload();
 }
 
 $(document).on('keyup', 'input, textarea', function(e){
