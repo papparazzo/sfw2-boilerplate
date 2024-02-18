@@ -117,11 +117,7 @@
                                     {{#if sfw2_authority.authenticated}}
                                     <li>
                                         <a
-                                            class="dropdown-item sfw2-clickable sfw2-send-ajax-button"
-                                            title="Klicke hier, um dein Passwort zu ändern."
-                                            data-sfw2-dialog-title="Passwort ändern"
-                                            data-sfw2-dialog-button-caption="ändern"
-                                            data-sfw2-form-id="#sfw2-change-password-form"
+                                            class="dropdown-item sfw2-clickable sfw2-load-form"
                                             data-sfw2-url="/authentication/change" {{!TODO: No Hardcoded path!}}
                                         >
                                             Passwort ändern
@@ -129,8 +125,8 @@
                                     </li>
                                     <li>
                                         <a
-                                            class="dropdown-item sfw2-clickable"
-                                            href="/authentication/settings"
+                                            class="dropdown-item sfw2-clickable sfw2-load-form"
+                                            data-sfw2-url="/authentication/settings"
                                         >
                                             Profileinstellungen...
                                         </a>
@@ -138,12 +134,8 @@
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <a
-                                            class="dropdown-item sfw2-clickable sfw2-send-ajax-button"
-                                            title="hier klicken, um sich anzumelden..."
-                                            data-sfw2-dialog-title="Abmelden"
-                                            data-sfw2-dialog-button-caption="abmelden"
-                                            data-sfw2-form-id="#sfw2-logout-form"
-                                            data-sfw2-url="/authentication?do=logoff" {{!TODO: No Hardcoded path!}}
+                                            class="dropdown-item sfw2-clickable sfw2-load-form"
+                                            data-sfw2-url="/authentication?do=logout" {{!TODO: No Hardcoded path!}}
                                         >
                                             Abmelden
                                         </a>
