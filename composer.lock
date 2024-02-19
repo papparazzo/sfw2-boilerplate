@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0923760ed3a3d076093b0b425373a065",
+    "content-hash": "c0d0a3ef9c53d0f9ec1e0a493af5fadc",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -924,6 +924,34 @@
             "time": "2024-01-20T07:02:13+00:00"
         },
         {
+            "name": "sfw2/content",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "../sfw2-content",
+                "reference": "74091054732241229805656185452c41652d4ba6"
+            },
+            "require": {
+                "php": "^8.2",
+                "psr/http-message": "^2.0",
+                "sfw2/database": "^3.0",
+                "sfw2/routing": "^7.0",
+                "sfw2/validator": "^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SFW2\\Content\\": "src/"
+                }
+            },
+            "license": [
+                "GNU AFFERO GENERAL PUBLIC LICENSE Version 3"
+            ],
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "sfw2/core",
             "version": "5.2.0",
             "source": {
@@ -1085,16 +1113,16 @@
         },
         {
             "name": "sfw2/routing",
-            "version": "7.0.1",
+            "version": "7.2.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:papparazzo/sfw2-routing.git",
-                "reference": "ae54a2e7c61e54f038ed74682ce8b9236ae7bba3"
+                "reference": "c1655473d81e5d7d72222751f93f939b9d85e8d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/papparazzo/sfw2-routing/zipball/ae54a2e7c61e54f038ed74682ce8b9236ae7bba3",
-                "reference": "ae54a2e7c61e54f038ed74682ce8b9236ae7bba3",
+                "url": "https://api.github.com/repos/papparazzo/sfw2-routing/zipball/c1655473d81e5d7d72222751f93f939b9d85e8d2",
+                "reference": "c1655473d81e5d7d72222751f93f939b9d85e8d2",
                 "shasum": ""
             },
             "require": {
@@ -1123,7 +1151,7 @@
             "license": [
                 "GNU AFFERO GENERAL PUBLIC LICENSE Version 3"
             ],
-            "time": "2024-01-13T12:20:58+00:00"
+            "time": "2024-02-04T06:58:59+00:00"
         },
         {
             "name": "sfw2/session",
@@ -3383,6 +3411,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "sfw2/content": 20,
         "sfw2/gallery": 20,
         "sfw2/guestbook": 20,
         "sfw2/menu": 20,
