@@ -22,9 +22,11 @@
 
 namespace SFW2\Boilerplate;
 
-use SFW2\Routing\Container;
+use JsonException;
 use OutOfRangeException;
+use SFW2\Database\DatabaseException;
 use SFW2\Database\DatabaseInterface;
+use SFW2\Database\QueryHelper;
 use SFW2\Routing\ControllerMap\ControllerData;
 use SFW2\Routing\ControllerMap\ControllerMapInterface;
 
@@ -38,7 +40,8 @@ class ControllerMapByDatabase implements ControllerMapInterface {
     /**
      * @param int $pathId
      * @return ControllerData
-     * @throws \JsonException
+     * @throws JsonException
+     * @throws DatabaseException
      */
     public function getControllerRulsetByPathId(int $pathId): ControllerData
     {
@@ -49,7 +52,8 @@ class ControllerMapByDatabase implements ControllerMapInterface {
             "ON `ctrlMap`.`ControllerTemplateId` = `ctrlTempl`.`Id` " .
             "WHERE `ctrlMap`.`Id` = %s ";
 
-        $res = $this->database->selectRow($stmt, [$pathId]);
+        $qh = new QueryHelper($this->database);
+        $res = $qh->selectRow($stmt, [$pathId]);
 
         if(empty($res)) {
             throw new OutOfRangeException("no entry found for path <$pathId>");
