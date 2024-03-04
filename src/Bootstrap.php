@@ -26,6 +26,7 @@ use DI\Container;
 use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
+use Exception;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\NoReturn;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -46,7 +47,6 @@ use SFW2\Core\Permission\PermissionInterface;
 use SFW2\Core\Utils\DateTimeHelper;
 use SFW2\Core\Utils\Mailer;
 use SFW2\Database\DatabaseInterface;
-use SFW2\Database\Exception;
 use SFW2\Routing\Dispatcher;
 use SFW2\Routing\Middleware\Error;
 use SFW2\Routing\Middleware\Offline;
@@ -78,7 +78,6 @@ class Bootstrap {
 
     /**
      * @throws DependencyException
-     * @throws Exception
      * @throws NotFoundException
      * @throws InvalidArgumentException
      * @throws ContainerException
@@ -198,7 +197,7 @@ class Bootstrap {
 
     /**
      * @throws ContainerException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getContainer(string $configFile): Container
     {
