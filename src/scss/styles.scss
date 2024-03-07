@@ -1,1 +1,157 @@
 @import "bootstrap/scss/bootstrap";
+
+$bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
+@import "~bootstrap-icons/font/bootstrap-icons.scss";
+@import "~lightbox2/dist/css/lightbox.min.css";
+
+@import "config";
+
+/** Bootstrap: change font-color of active navbar entry **/
+.nav-item > a.active {
+    color: $sfw2-alternative-primary-color !important;
+}
+.nav-item > a:hover {
+    color: $sfw2-alternative-primary-color;
+}
+
+.sfw2-active-fore-color {
+    color: $sfw2-alternative-primary-color !important;
+}
+
+.sfw2-alternative-fore-color {
+    color: $sfw2-alternative-fore-color !important;
+}
+
+/** own **/
+.sfw2-alternative-box-color {
+    background-color: $sfw2-alternative-primary-color;
+    color: $sfw2-alternative-fore-color;
+}
+
+.sfw2-header-container {
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+    height: 100vh;
+}
+
+.sfw2-header-bg-image {
+    display: flex;
+    flex-grow: 1;
+    background-size: cover;
+    background-image:
+        url($sfw2-backround-image);
+}
+
+.sfw2-counter-info {
+    float: right;
+    margin-left: 0.4rem;
+    margin-right: 0.95rem;
+    line-height: 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.sfw2-counter-value {
+    float: left;
+    color: $sfw2-alternative-primary-color;
+    font: 700 2.875rem/3.25rem "Montserrat", sans-serif;
+}
+
+.sfw2-animate {
+    opacity: 0.33;
+    animation: color-change 2s infinite;
+}
+
+.sfw2-handle-box {
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes color-change {
+    0% { color: $sfw2-alternative-primary-color; }
+    50% { color: black; }
+    100% { color: $sfw2-alternative-primary-color; }
+}
+
+.sfw2-no-border {
+    border: none !important;
+}
+
+.sfw2-clickable {
+    cursor: pointer;
+}
+
+a {
+    outline: none;
+}
+
+.sfw2-bottom-shaddow {
+    box-shadow: 0 8px 8px -1px hsla(0,0%,43.9%,.1);
+}
+
+.sfw2-ajax-loader {
+    display: inline-block;
+    width: 52px;
+    height: 52px;
+}
+
+.sfw2-ajax-loader:after {
+    content: " ";
+    display: block;
+    width: 43px;
+    height: 43px;
+    margin: 5% auto;
+    border-radius: 50%;
+    border: 6px solid $sfw2-alternative-primary-color;
+    border-color: $sfw2-alternative-primary-color transparent $sfw2-alternative-primary-color $sfw2-alternative-primary-color;
+    animation: sfw2-ajax-loader 1.2s linear infinite;
+}
+
+@keyframes sfw2-ajax-loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.sfw2-dropzone {
+    border: 2px dashed #BBBBBB;
+    border-radius: 5px 5px 5px 5px;
+    color: #BBB;
+}
+
+/*
+
+
+.dropzone {
+}
+
+.dropzone.valid {
+    color: #0B8C37;
+    border-color: #0B8C37;
+    text-shadow: 0px 0px 10px #7A7A7A, -0px -0px black;
+}
+
+.dropzone.error {
+    color: #CD0A0A;
+    border-color: #CD0A0A;
+    text-shadow: 0px 0px 3px #B0B0B0, -0px -0px black;
+}
+
+.currfile {
+    position: relative;
+    left: -17px;
+    bottom: -6px;
+    font-size: 9px;
+    font-weight: bolder;
+    text-align: left;
+}
+
+.currfilemulti {
+    bottom: 42px !important;
+}
+*/
