@@ -25,6 +25,7 @@ namespace SFW2\Boilerplate;
 use OutOfRangeException;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Database\DatabaseException;
+use SFW2\Database\QueryHelper;
 use SFW2\Routing\PathMap\PathMapInterface;
 
 class PathMapByDatabase implements PathMapInterface
@@ -46,7 +47,8 @@ class PathMapByDatabase implements PathMapInterface
      */
     protected function loadRootPath(array &$map): void
     {
-        $item = $this->database->selectRow("SELECT `Id`, `Name` FROM `{TABLE_PREFIX}_path` WHERE `ParentPathId` IS NULL");
+        $qh = new QueryHelper($this->database);
+        $item = $qh->selectRow("SELECT `Id`, `Name` FROM `{TABLE_PREFIX}_path` WHERE `ParentPathId` IS NULL");
 
         $map['/'] = $item['Id'];
         $this->loadPath($map, (int)$item['Id']);
