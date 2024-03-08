@@ -24,7 +24,7 @@ namespace SFW2\Boilerplate;
 
 use OutOfRangeException;
 use SFW2\Database\DatabaseInterface;
-use SFW2\Database\Exception;
+use SFW2\Database\DatabaseException;
 use SFW2\Routing\PathMap\PathMapInterface;
 
 class PathMapByDatabase implements PathMapInterface
@@ -34,7 +34,7 @@ class PathMapByDatabase implements PathMapInterface
 
     /**
      * @param DatabaseInterface $database
-     * @throws Exception
+     * @throws DatabaseException
      */
     public function __construct(protected DatabaseInterface $database)
     {
@@ -42,7 +42,7 @@ class PathMapByDatabase implements PathMapInterface
     }
 
     /**
-     * @throws Exception
+     * @throws DatabaseException
      */
     protected function loadRootPath(array &$map): void
     {
@@ -57,7 +57,7 @@ class PathMapByDatabase implements PathMapInterface
      * @param int $parentId
      * @param string $prefix
      * @return void
-     * @throws Exception
+     * @throws DatabaseException
      */
     protected function loadPath(array &$map, int $parentId, string $prefix = '/'): void {
 
@@ -70,7 +70,7 @@ class PathMapByDatabase implements PathMapInterface
     }
 
     /**
-     * @throws Exception
+     * @throws DatabaseException
      */
     public function updateModificationDateRecursive(string $path): void
     {
@@ -92,6 +92,7 @@ class PathMapByDatabase implements PathMapInterface
     /**
      * @param int $pathId
      * @return void
+     * @throws DatabaseException
      */
     protected function updateModificationDate(int $pathId): void
     {
