@@ -46,6 +46,7 @@ use SFW2\Core\Handlebars\LoaderType;
 use SFW2\Core\Permission\PermissionInterface;
 use SFW2\Core\Utils\DateTimeHelper;
 use SFW2\Core\Utils\Mailer;
+use SFW2\Database\DatabaseException;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Routing\Dispatcher;
 use SFW2\Routing\Middleware\Error;
@@ -83,6 +84,7 @@ class Bootstrap {
      * @throws ContainerException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws DatabaseException
      */
     #[NoReturn]
     public function run(string $configFile): void
