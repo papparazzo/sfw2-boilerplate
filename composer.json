@@ -29,7 +29,7 @@
             "symlink": true
         }, {
             "type": "path",
-            "url": "../sfw2-guestbook",
+            "url": "../sfw2-contact",
             "symlink": true
         }, {
             "type": "path",
@@ -72,7 +72,7 @@
         "sfw2/content": "@dev",
         "sfw2/database": "^4.0",
         "sfw2/gallery": "@dev",
-        "sfw2/guestbook": "@dev",
+        "sfw2/contact": "@dev",
         "sfw2/menu": "@dev",
         "sfw2/routing": "^7.0",
         "sfw2/session": "^4.0",
