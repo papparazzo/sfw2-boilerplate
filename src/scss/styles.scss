@@ -124,6 +124,11 @@ a {
     color: #BBB;
 }
 
+.sfw2-logo-icon {
+    @extend #{$sfw2-logo-class};
+}
+
+
 /*
 
 
