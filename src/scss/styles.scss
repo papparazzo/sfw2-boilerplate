@@ -128,6 +128,9 @@ a {
     @extend #{$sfw2-logo-class};
 }
 
+.sfw2-header-ribbon {
+    height: $sfw2-header-ribbon-height;
+}
 
 /*
 
