@@ -60,7 +60,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
 
         "ext-mbstring": "*",
         "ext-openssl": "*",
@@ -68,7 +68,7 @@
         "ext-mysqli": "*",
 
         "sfw2/config": "^1.0",
-        "sfw2/core": "^5.0",
+        "sfw2/core": "^6.0",
         "sfw2/content": "@dev",
         "sfw2/database": "^4.0",
         "sfw2/gallery": "@dev",
