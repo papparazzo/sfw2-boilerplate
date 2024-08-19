@@ -43,7 +43,7 @@ class ControllerMapByDatabase implements ControllerMapInterface {
      * @throws JsonException
      * @throws DatabaseException
      */
-    public function getControllerRulsetByPathId(int $pathId): ControllerData
+    public function getControllerRulesetByPathId(int $pathId): ControllerData
     {
         $stmt = /** @lang MySQL */
             "SELECT `ClassName`, `JsonData` " .
