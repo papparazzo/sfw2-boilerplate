@@ -74,7 +74,9 @@ class Bootstrap {
 
     protected Container $container;
 
-    public function __construct(protected string $rootPath) {
+    public function __construct(
+        protected string $rootPath
+    ) {
     }
 
     /**
@@ -118,7 +120,7 @@ class Bootstrap {
         $router = new Router(new Runner($controllerMap, $container, $responseEngine), $pathMap);
         $router->addMiddleware(new Offline($container->get(CacheInterface::class), $container));
         $this->loadMiddleware($container, $router);
-        $router->addMiddleware(new XSRFTokenHandler(new XSRFToken(new SessionSimpleCache($session))));
+        #$router->addMiddleware(new XSRFTokenHandler(new XSRFToken(new SessionSimpleCache($session))));
         $router->addMiddleware(new Error($responseEngine, $container, $container->get(LoggerInterface::class)));
 
         $creator = new ServerRequestCreator(
@@ -212,7 +214,16 @@ class Bootstrap {
         $builder->addDefinitions([
             SessionInterface::class => function () {
                 return new Session();
-            },
+            },/*
+            ExtDatabaseInterface::class => function (ContainerInterface $ci) {
+                return new Database(
+                    $ci->get('database.dsn'),
+                    $ci->get('database.user'),
+                    $ci->get('database.pwd'),
+                    $ci->get('database.options'),
+                    $ci->get('database.prefix')
+                );
+            },*/
             DatabaseInterface::class => function (ContainerInterface $ci) {
                 return new Database(
                     $ci->get('database.dsn'),
