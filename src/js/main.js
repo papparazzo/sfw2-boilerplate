@@ -258,14 +258,14 @@ $(document).on('click', '.sfw2-button-send', function(){
             }
 
             let reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = function() {
                 data.pop();
                 data.push({name: 'file', value : reader.result});
                 data.push({name: 'name', value : file.name});
                 file = null;
                 sfw2Load(url, data, formId, 1).done(
                     // FIXME Das hier ist noch nicht gut!
-                    (response, textStatus, jqXHR) => {
+                    () => {
                         sfw2Reload();
                     }
                 );
@@ -408,7 +408,7 @@ $(document).on('click', '.sfw2-btn-upload', function() {
     // FIXME Das hier ist noch nicht gut!
     let uploadFile = (file) => {
         let reader = new FileReader();
-        reader.onload = function(evt) {
+        reader.onload = function() {
             let data = {gallery : galleryId, file : reader.result, name : file.name};
             sfw2Load(url, data, formId, fcount, files.length).done(
                 (response, textStatus, jqXHR) => {
@@ -426,9 +426,6 @@ $(document).on('click', '.sfw2-btn-upload', function() {
     uploadFile(files.pop());
 });
 
-
-
-
 /*
 var inputFiles = document.getElementsByTagName("input")[0];
 inputFiles.onchange = function(){
@@ -439,21 +436,21 @@ inputFiles.onchange = function(){
 
 function pFileReader(file){
   return new Promise((resolve, reject) => {
-    var fr = new FileReader();
-    fr.onload = resolve;  // CHANGE to whatever function you want which would eventually call resolve
-    fr.onerror = reject;
-    fr.readAsDataURL(file);
+    var fileReader = new FileReader();
+    fileReader.onload = resolve;  // CHANGE to whatever function you want which would eventually call resolve
+    fileReader.onerror = reject;
+    fileReader.readAsDataURL(file);
   });
 }
 
 function readFile(file){
   return new Promise((resolve, reject) => {
-    var fr = new FileReader();
-    fr.onload = () => {
+    let fileReader = new FileReader();
+    fileReader.onload = () => {
       resolve(fr.result )
     };
-    fr.onerror = reject;
-    fr.readAsText(file.blob);
+    fileReader.onerror = reject;
+    fileReader.readAsText(file.blob);
   });
 }
 */
