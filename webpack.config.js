@@ -3,18 +3,35 @@
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const miniCssExtractPlugin = require('mini-css-extract-plugin')
+const glob = require('glob');
 
 module.exports = {
     mode: 'development',
     entry: function() {
         return {
-            main: './src/js/main.js',
-            custom: './src/js/custom.js',
+            main: {
+                import: './src/js/sfw2_main.js',
+                dependOn: 'shared'
+            },
+            ...glob.sync('src/js/modules/**.js').reduce(
+                function(obj, el) {
+                    obj[path.parse(el).name] = {
+                        import: el,
+                        dependOn: 'shared'
+                    };
+                    return obj
+                },
+                {}
+            ),
+            shared: ['jquery', 'bootstrap']
         };
     },
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'public/js'),
+    },
+    optimization: {
+        runtimeChunk: 'single',
     },
     devServer: {
         static: path.resolve(__dirname, 'public'),
