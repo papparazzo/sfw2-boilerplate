@@ -1,14 +1,12 @@
-import '../scss/styles.scss'
+"use strict"
 
-import lightbox from 'lightbox2'
-lightbox;
-
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import {sfwShowCommonDialog, sfwShowFormDialog} from './sfw2_dialog'
+import {loadForm, sfw2Load, sfw2LoadContent} from "./sfw2_loader";
 
 import * as bootstrap from 'bootstrap'
 
 import $ from "jquery";
+import {sfw2Reload} from "./sfw2_helper";
 
 $(document).on('click', '.sfw2-load-form', function() {
     let url = $(this).data('sfw2-url');
@@ -28,23 +26,9 @@ $(function(){
     loadForm(`${urlParams.get('getForm')}${window.location.search}`);
 });
 
-function loadForm(url) {
-    sfw2LoadContent($('#sfw2-form'), url);
-    const myModal = new bootstrap.Modal('#sfw2-form-dialog-modal', {});
-    myModal.show();
-}
-
 $('.sfw2-reload-content').each(function() {
     sfw2LoadContent($(this), $(this).data('sfw2-url'));
 });
-
-function sfw2Reload() {
-    const url = new URL(window.location)
-    url.searchParams.delete('getForm');
-    url.searchParams.delete('hash');
-    window.location.href = url.toString();
-    window.location.reload();
-}
 
 $(document).on('keyup', 'input, textarea', function(e){
     $(this).removeClass('is-invalid');
@@ -57,32 +41,6 @@ $(document).on('keyup', 'input, textarea', function(e){
 $(document).on('click', 'input:checkbox', function(){
     $(this).removeClass('is-invalid');
 });
-
-function sfw2LoadContent(that, url) {
-    that.append('<div class="text-center"><div class="sfw2-ajax-loader" /></div>');
-
-    $.ajax({
-        url: url,
-        dataType: "html",
-        headers : {
-            "Content-Type":     "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "accept":           "application/xml"
-        }
-    }).done((data, textStatus, request) => {
-        $('#sfw2-xsrf-token').val(request.getResponseHeader('x-csrf-token'));
-        that.html($.parseHTML(data));
-    }).fail((request) => {
-        // FIXME: Ist hier wahrscheinlich immer null da Session-Middleware nicht richtig aufgerufen wird!
-        $('#sfw2-xsrf-token').val(request.getResponseHeader('x-csrf-token'));
-        that.html(
-            '<div class="alert alert-danger" role="alert">' +
-            '<strong>Anmerkung:</strong>' +
-            '<p>Es ist ein interner Fehler aufgetreten!</p>' +
-            '</div>'
-        );
-    });
-}
 
 $(document).on('click', '.sfw2-send-ajax-button', function(){
     const button = $(this);
@@ -136,50 +94,9 @@ $(document).on('click', '.sfw2-delete-button', function(){
     myModal.show();
 });
 
-function sfwShowFormDialog(button, title, buttonCaption) {
-    const formId = button.data('sfw2-form-id');
-
-    $('#sfw2-form-dialog-body').html($(formId).html());
-
-    let sendButton = $('#sfw2-form-dialog-button-send');
-
-    $('#sfw2-form-dialog-title').html(title);
-    sendButton.html(buttonCaption);
-
-    sendButton.data('sfw2-item-id', button.data('sfw2-item-id'));
-    sendButton.data('sfw2-form-id', '#sfw2-form-dialog-body form');
-    sendButton.data('sfw2-url', button.data('sfw2-url'));
-
-    const myModal = new bootstrap.Modal('#sfw2-form-dialog-modal', {});
-    myModal.show();
-}
-
 document.getElementById('sfw2-form-dialog-modal').addEventListener('shown.bs.modal', event => {
      $("#sfw2-form-dialog-body input").first().focus();
 })
-
-function sfwShowCommonDialog(data) {
-    if(bootstrap.Modal.getInstance('#sfw2-form-dialog-modal')) {
-        bootstrap.Modal.getInstance('#sfw2-form-dialog-modal').hide();
-    }
-
-    if(data.identifier) {
-        $('#sfw2-common-dialog-identifier').html(`[${data.identifier}]`);
-    } else {
-        $('#sfw2-common-dialog-identifier').html("");
-    }
-    $('#sfw2-common-dialog-title').html(data.title);
-    $('#sfw2-common-dialog-body').html(data.description);
-
-    if(data.reload) {
-        $('#sfw2-common-dialog-button-okay').click(() => sfw2Reload());
-    } else {
-        $('#sfw2-common-dialog-button-okay').click();
-    }
-
-    const myModal = new bootstrap.Modal('#sfw2-common-dialog-modal', {});
-    myModal.show();
-}
 
 window.onerror = function(message, source, lineno, error) {
     let response = {
@@ -209,6 +126,14 @@ $(document).on('click', '.sfw2-button-send', function(){
     if($(formId)) {
         data = $(formId).serializeArray();
     }
+
+    $(`${formId} .sfw2-data-container`).each(function() {
+        let val = [];
+        $(this).find('span').each(function() {
+            val.push($(this).data('sfw2-element-id'));
+        })
+        data.push({name : this.id, value : val});
+    });
 
     if(itemId !== '') {
         data.push({name : 'id', value : itemId});
@@ -274,72 +199,6 @@ $(document).on('click', '.sfw2-button-send', function(){
         }
     );
 });
-
-function sfw2Load(url, data, form, totalFiles, fileCount) {
-    $("#sfw2-progress-bar").css('width', 0);
-    return $.ajax({
-        type: "POST",
-        url: url,
-        data: data,
-        headers : {
-            "X-CSRF-Token": $('#sfw2-xsrf-token').val(),
-            "X-Requested-With": "XMLHttpRequest",
-            "accept":           "application/json"
-        },
-
-        xhr: function() {
-            let xhr = new window.XMLHttpRequest();
-            if(totalFiles === 0) {
-                return xhr;
-            }
-            xhr.upload.addEventListener(
-                "progress",
-                function(evt) {
-                    if (!evt.lengthComputable) {
-                        return;
-                    }
-                    let percentComplete = evt.loaded / evt.total;
-                    percentComplete = parseInt(percentComplete * 100);
-
-                    // TODO: use class instead of id
-                    $("#sfw2-progress-bar").css('width', percentComplete + '%');
-                    if(totalFiles > 1) {
-                        // TODO: use class instead of id
-                        $("#sfw2-progress-bar-total").css(
-                            'width',
-                            (((totalFiles - fileCount - 1) / totalFiles) * 100) + (percentComplete / (totalFiles)) + '%').text('[Datei ' + (totalFiles - fileCount) + ' von ' + totalFiles + ']');
-                    }
-                },
-                false
-            );
-            return xhr;
-        }
-    }).fail((jqXHR) => {
-        $('#sfw2-xsrf-token').val(jqXHR.getResponseHeader('x-csrf-token'));
-
-        let data = jqXHR.responseJSON;
-
-        let entries = data.sfw2_payload;
-
-        if(jqXHR.status !== 422 || !entries /* No entries && status 422 => ungültiges xsrf-token*/) {
-            data.title = `[${data.title}] ${data.caption}`;
-            data.identifier = `ID: ${data.identifier}`;
-            data.reload = true;
-            sfwShowCommonDialog(data);
-            return;
-        }
-        for(let key in entries) {
-            let item = $(form).find('[name=' + key + ']');
-
-            if(entries[key].hint) {
-                item.addClass('is-invalid');
-                item.nextAll('.invalid-feedback:first').html(entries[key].hint);
-            } else {
-                item.removeClass('is-invalid');
-            }
-        }
-    });
-}
 
 $(document).on('click', '.sfw2-btn-upload', function() {
     const that = $(this);
