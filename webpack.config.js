@@ -9,21 +9,21 @@ module.exports = {
     mode: 'development',
     entry: function() {
         return {
-            main: {
+            sfw2_main: {
                 import: './src/js/sfw2_main.js',
-                dependOn: 'shared'
+                dependOn: 'sfw2_shared'
             },
             ...glob.sync('src/js/modules/**.js').reduce(
                 function(obj, el) {
                     obj[path.parse(el).name] = {
                         import: el,
-                        dependOn: 'shared'
+                        dependOn: 'sfw2_shared'
                     };
                     return obj
                 },
                 {}
             ),
-            shared: ['jquery', 'bootstrap']
+            sfw2_shared: ['jquery', 'bootstrap']
         };
     },
     output: {
