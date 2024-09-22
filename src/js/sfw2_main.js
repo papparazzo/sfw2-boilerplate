@@ -139,7 +139,6 @@ $(document).on('click', '.sfw2-button-send', function(){
         data.push({name : 'id', value : itemId});
     }
 
-    let hasFileUpload = false;
     let f = $(`${formId} input:file`);
     let file = null;
     if(f.length && typeof f.data('sfw2-onlyimage') !== 'undefined') {
@@ -164,7 +163,6 @@ $(document).on('click', '.sfw2-button-send', function(){
             }
         }
         data.push({name: 'validateOnly', value : true});
-        hasFileUpload = true;
     }
 
     sfw2Load(url, data, formId, 0).done(
