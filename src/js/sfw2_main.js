@@ -1,9 +1,7 @@
 "use strict"
 
-import {sfwShowCommonDialog, sfwShowFormDialog} from './sfw2_dialog'
+import {sfwShowCommonDialog, sfwShowDeleteDialog, sfwShowFormDialog} from './sfw2_dialog'
 import {loadForm, sfw2Load, sfw2LoadContent} from "./sfw2_loader";
-
-import * as bootstrap from 'bootstrap'
 
 import $ from "jquery";
 import {sfw2Reload} from "./sfw2_helper";
@@ -64,34 +62,7 @@ $(document).on('click', '.sfw2-update-button', function() {
  */
 
 $(document).on('click', '.sfw2-delete-button', function(){
-    const button = $(this);
-    const itemId = button.data('sfw2-item-id');
-    const formId = button.data('sfw2-form-id');
-
-    const titleItem = $(formId + '_title_' + itemId);
-
-    const sendButton = $('#sfw2-form-dialog-button-send');
-    sendButton.html('Daten löschen');
-
-    let title = titleItem.text();
-    if(!title.length) {
-        title = titleItem.val();
-    }
-
-    $('#sfw2-form-dialog-title').html('Eintrag löschen?');
-
-    title = $.trim(title);
-    if(title.length) {
-        title = '"' + title + '"';
-    }
-    $('#sfw2-form-dialog-body').html(`Soll der Eintrag <strong>${title}</strong> wirklich gelöscht werden?`);
-
-    sendButton.data('sfw2-item-id', itemId);
-    sendButton.data('sfw2-form-id', formId);
-    sendButton.data('sfw2-url', button.data('sfw2-url'));
-
-    const myModal = new bootstrap.Modal('#sfw2-form-dialog-modal', {});
-    myModal.show();
+    sfwShowDeleteDialog($(this), 'Eintrag löschen?','Daten löschen')
 });
 
 document.getElementById('sfw2-form-dialog-modal').addEventListener('shown.bs.modal', event => {
