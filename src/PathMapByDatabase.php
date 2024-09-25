@@ -23,10 +23,10 @@
 namespace SFW2\Boilerplate;
 
 use OutOfRangeException;
+use SFW2\Core\Interfaces\PathMapInterface;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Database\DatabaseException;
 use SFW2\Database\QueryHelper;
-use SFW2\Routing\PathMap\PathMapInterface;
 
 class PathMapByDatabase implements PathMapInterface
 {
