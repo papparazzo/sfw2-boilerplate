@@ -13,7 +13,7 @@ module.exports = {
                 import: './src/js/sfw2_main.js',
                 dependOn: 'sfw2_shared'
             },
-            ...glob.sync('src/js/modules/**.js').reduce(
+            ...glob.sync('./src/js/modules/**.js').reduce(
                 function(obj, el) {
                     obj[path.parse(el).name] = {
                         import: el,
@@ -31,7 +31,7 @@ module.exports = {
         path: path.resolve(__dirname, 'public/js'),
     },
     optimization: {
-        runtimeChunk: 'single',
+  //      runtimeChunk: 'single',
     },
     devServer: {
         static: path.resolve(__dirname, 'public'),
