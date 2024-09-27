@@ -6,6 +6,10 @@ $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
 
 @import "config";
 
+.dropdown-hover-all .dropdown-menu, .dropdown-hover > .dropdown-menu.dropend {
+    margin-left:-10px !important
+}
+
 /** Bootstrap: change font-color of active navbar entry **/
 .nav-item > a.active {
     color: $sfw2-alternative-primary-color !important;
@@ -71,7 +75,7 @@ $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
 
 @keyframes color-change {
     0% { color: $sfw2-alternative-primary-color; }
-    50% { color: black; }
+    50% { color: $sfw2-alternative-fore-color; }
     100% { color: $sfw2-alternative-primary-color; }
 }
 
