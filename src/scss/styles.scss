@@ -43,8 +43,13 @@ $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
     display: flex;
     flex-grow: 1;
     background-size: cover;
-    background-image:
-        url($sfw2-backround-image);
+    background-image: url($sfw2-background-image-s);
+}
+
+@media (min-width: 1024px) {
+    .sfw2-header-bg-image {
+        background-image: url($sfw2-background-image-l);
+    }
 }
 
 .sfw2-counter-info {
