@@ -142,6 +142,9 @@ $(document).on('click', '.sfw2-button-send', function(){
 
             if(response.title && response.description) {
                 sfwShowCommonDialog(response);
+                if (response.status) {
+                    $(formId).find('.sfw2-form-status').html(response.status);
+                }
                 return;
             }
 
