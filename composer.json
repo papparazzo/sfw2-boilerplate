@@ -16,32 +16,11 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "../sfw2-content",
-            "symlink": true
-        }, {
-            "type": "path",
-            "url": "../sfw2-menu",
-            "symlink": true
-        }, {
-            "type": "path",
-            "url": "../sfw2-gallery",
-            "symlink": true
-        }, {
-            "type": "path",
-            "url": "../sfw2-contact",
-            "symlink": true
-        }, {
-            "type": "path",
-            "url": "../sfw2-authority",
-            "symlink": true
-        }, {
-            "type": "path",
-            "url": "../sfw2-appointments",
-            "symlink": true
-        },{
             "type": "vcs",
-            "url": "https://github.com/papparazzo/sfw2-config.git"
+            "url": "https://github.com/papparazzo/sfw2-menu.git"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-authority.git"
         }, {
             "type": "vcs",
             "url": "https://github.com/papparazzo/sfw2-routing.git"
@@ -53,10 +32,19 @@
             "url": "https://github.com/papparazzo/sfw2-validator.git"
         }, {
             "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-config.git"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-content.git"
+        }, {
+            "type": "vcs",
             "url": "https://github.com/papparazzo/sfw2-core.git"
         }, {
             "type": "vcs",
             "url": "https://github.com/papparazzo/sfw2-session.git"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/papparazzo/sfw2-exception.git"
         }
     ],
     "require": {
@@ -64,15 +52,13 @@
 
         "ext-mbstring": "*",
         "ext-openssl": "*",
+        "ext-pdo": "*",
         "ext-intl": "*",
         "ext-mysqli": "*",
 
         "sfw2/config": "^1.0",
-        "sfw2/core": "^8.0",
-        "sfw2/content": "@dev",
+        "sfw2/core": "^7.0",
         "sfw2/database": "^4.0",
-        "sfw2/gallery": "@dev",
-        "sfw2/contact": "@dev",
         "sfw2/menu": "@dev",
         "sfw2/routing": "^8.0",
         "sfw2/session": "^4.0",

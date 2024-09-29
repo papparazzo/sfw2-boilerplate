@@ -44,9 +44,10 @@ use SFW2\Config\Exceptions\ContainerException;
 use SFW2\Core\Handlebars\HandlebarsFactory;
 use SFW2\Core\Handlebars\LoaderType;
 use SFW2\Core\Interfaces\PathMapInterface;
+use SFW2\Core\Mailer\MailerInterface;
+use SFW2\Core\Mailer\SimpleMailer;
 use SFW2\Core\Permission\PermissionInterface;
 use SFW2\Core\Utils\DateTimeHelper;
-use SFW2\Core\Utils\Mailer;
 use SFW2\Database\DatabaseException;
 use SFW2\Database\DatabaseInterface;
 use SFW2\Routing\Dispatcher;
@@ -251,10 +252,10 @@ class Bootstrap {
             PermissionInterface::class => function(SessionInterface $session, DatabaseInterface $database) {
                 return new Permission($session, $database);
             },
-            Mailer::class => function(ContainerInterface $ci) {
+            MailerInterface::class => function(ContainerInterface $ci) {
                 /** @var HandlebarsFactory $handlebars */
                 $handlebars = $ci->get(HandlebarsFactory::class);
-                return new Mailer(
+                return new SimpleMailer(
                     $ci->get('project.default_sender_address'),
                     [$ci->get('project.webmaster_mail_address')],
                     $handlebars->getHandlebars(LoaderType::TEMPLATE_LOADER),
