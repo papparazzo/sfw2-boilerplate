@@ -31,6 +31,10 @@ $('.sfw2-reload-content').each(function() {
 $(document).on('keyup', 'input, textarea', function(e){
     $(this).removeClass('is-invalid');
 
+    if(e.keyCode === 13) {
+        $(this).closest('form').find('.sfw2-button-send').trigger('click');
+    }
+
     if($(this).hasClass('sfw2-submit-on-enter') && e.keyCode === 13) {
         $('#sfw2-form-dialog-button-send').trigger('click');
     }
@@ -106,7 +110,7 @@ $(document).on('click', '.sfw2-button-send', function(){
         data.push({name : this.id, value : val});
     });
 
-    if(itemId !== '') {
+    if(itemId && itemId !== '') {
         data.push({name : 'id', value : itemId});
     }
 
