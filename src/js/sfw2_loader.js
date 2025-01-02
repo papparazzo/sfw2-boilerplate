@@ -71,11 +71,12 @@ export function sfw2Load(url, data, form, totalFiles, fileCount) {
     });
 }
 
-export function sfw2LoadContent(that, url) {
+export function sfw2LoadContent(that, url, data) {
     that.append('<div class="text-center"><div class="sfw2-ajax-loader" /></div>');
 
     $.ajax({
         url: url,
+        data: data,
         dataType: "html",
         headers : {
             "Content-Type":     "application/json",
