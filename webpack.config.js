@@ -45,6 +45,9 @@ module.exports = {
     ],
     module: {
         rules: [{
+            test: /\.handlebars$/,
+            loader: "handlebars-loader"
+        }, {
             test: /\.(scss)$/,
             use: [{
                 loader: 'style-loader'
