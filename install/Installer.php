@@ -45,62 +45,76 @@ class Installer
     public function install(): void
     {
         $this->ioInterface->write('This will set up a new web page project');
-        $config = $this->getConfigArray();
-        $this->setUpDatabase($config);
+        $this->setup();
         // TODO: run npm install!
+
+        #"npm install -g package-json-merge"
 
         $this->cleaningUp('install');
     }
 
-    protected function getConfigArray(): array
+    /**
+     * @throws Exception
+     */
+    protected function setup(): void
     {
         $host = $this->ioInterface->ask('installation host (domain)? ');
-        $dbHost = $this->ioInterface->ask("database host? [$host] ", $host);
-        $dbName = $this->ioInterface->ask("database name?");
+
+        $useDatabase = $this->ioInterface->askConfirmation('use database? ');
+
+        $config = [];
+
+        if($useDatabase) {
+            $dbHost = $this->ioInterface->ask("database host? [$host] ", $host);
+            $dbName = $this->ioInterface->ask("database name?");
+
+            $config = [
+                'database' => [
+                    'dsn'     => "mysql:dbname=$dbName;host=$dbHost",
+                    'user'    => $this->ioInterface->ask('database user? '),
+                    'pwd'     => $this->ioInterface->ask('database pwd? '),
+                    'options' => [],
+                    'prefix'  => $this->ioInterface->ask('database prefix? ')
+                ]
+            ];
+
+            $this->setUpDatabase([
+                'host' => $dbHost,
+                'user' => $config['database']['user'],
+                'pwd' => $config['database']['pwd'],
+                'db' => $dbName,
+                'prefix' => $config['database']['prefix']
+            ]);
+        }
 
         // TODO: Validate input!
-        $config = [
-            'database' => [
-                'dsn'     => "mysql:dbname=$dbName;host=$dbHost",
-                'user'    => $this->ioInterface->ask('database user? '),
-                'pwd'     => $this->ioInterface->ask('database pwd? '),
-                'options' => [],
-                'prefix'  => $this->ioInterface->ask('database prefix? ')
+
+        $config['site'] = [
+            'offline'            => true,
+            'debugMode'          => false,
+            'offlineBypassToken' => md5(openssl_random_pseudo_bytes(64))
+        ];
+        $config['project'] = [
+            'title'                  => $this->ioInterface->ask('project title? '),
+            'sub_title'              => $this->ioInterface->ask('project sub title? '),
+            'webmaster_mail_address' => "webmaster@$host",
+            'default_sender_address' => "noreply@$host",
+        ];
+        $config['misc'] = [
+            'timeZone'    => $this->ioInterface->ask('time zone? [' . date_default_timezone_get() . '] ', date_default_timezone_get()),
+            'locale'      => $this->ioInterface->ask('locale? [' . Locale::getDefault() . '] ', Locale::getDefault()),
+            'memoryLimit' => '256M'
+        ];
+        $config['pathes'] = [
+            'tmp'        => 'tmp/',
+            'log'        => 'weblog/',
+            'data'       => 'data/',
+            'templates'  => [
+                "SFW2\\Base" => "../templates/",
             ],
-            'site' => [
-                'offline'            => true,
-                'debugMode'          => false,
-                'offlineBypassToken' => md5(openssl_random_pseudo_bytes(64))
-            ],
-            'project' => [
-                'title'                  => $this->ioInterface->ask('project title? '),
-                'sub_title'              => $this->ioInterface->ask('project sub title? '),
-                'webmaster_mail_address' => "webmaster@$host",
-                'default_sender_address' => "noreply@$host",
-            ],
-            'misc' => [
-                'timeZone'    => $this->ioInterface->ask('time zone? [' . date_default_timezone_get() . ']', date_default_timezone_get()),
-                'locale'      => $this->ioInterface->ask('locale? [' . Locale::getDefault() . ']', Locale::getDefault()),
-                'memoryLimit' => '256M'
-            ],
-            'pathes' => [
-                'tmp'        => 'tmp/',
-                'log'        => 'weblog/',
-                'data'       => 'data/',
-                'templates'  => [
-                    "SFW2\\Base" => "../templates/",
-                ],
-                'middleware' => []
-            ]
+            'middleware' => []
         ];
         file_put_contents('config/config.yaml', Yaml::dump($config));
-        return [
-            'host' => $dbHost,
-            'user' => $config['database']['user'],
-            'pwd' => $config['database']['pwd'],
-            'db' => $dbName,
-            'prefix' => $config['database']['prefix']
-        ];
     }
 
     /**
